@@ -1,28 +1,20 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+union endian {
+    uint8_t ei[2];
+    uint16_t si;
+};
+
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("ERROR: Expected single filename as argument.\n");
+    union endian myUnion;
 
-        return 1;
-    }
+    myUnion.si = 0xff;
+    myUnion.ei[0] = 0x2;
+    myUnion.ei[1] = 0xab;
 
-    FILE *file = fopen(argv[1], "rb");
+    printf("16 bit: %04" PRIx16 "\n", myUnion.si);
+    printf("8 bit: %02" PRIx8 "%02" PRIx8 "\n", myUnion.ei[0], myUnion.ei[1]);
 
-    if (!file) {
-        printf("ERROR: Couldn't open file %s.\n", argv[1]);
-
-        return 1;
-    }
-
-    union block M;
-    uint64_t nobits;
-    uint8_t i;
-
-    for (nobits = 0; i = 0; fread(&M[i], 1, 1, file) == 1; nobits += 8) {
-        printf("%02", PRIx8, M[i]);
-    }
-
-    printf("%02", PRIx8, 0x80);
+    return 0;
 }
