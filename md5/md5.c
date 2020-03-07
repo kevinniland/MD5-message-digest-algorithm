@@ -50,3 +50,13 @@ const uint32_t R[64] = {7, 12, 17, 22,
 #define GG(a,b,c,d,m,s,t) { a += G(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
 #define HH(a,b,c,d,m,s,t) { a += H(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
 #define II(a,b,c,d,m,s,t) { a += I(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
+
+const uint8_t PADDING = 0x00;
+const uint8_t BIT = 0x80;
+
+union bits {
+  uint64_t fileSize[8];
+  uint32_t hash[16];
+  uint8_t readFile[64];
+  uint8_t padding[64];
+};
