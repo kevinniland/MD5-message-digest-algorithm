@@ -40,8 +40,13 @@ const uint32_t R[64] = {7, 12, 17, 22,
                         10, 15, 21, 6, 
                         10, 15, 21};
 
-#define uchar unsigned char
-#define uint unsigned int
+#define ROTLEFT(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
+#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
+#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+#define H(x, y, z) ((x) ^ (y) ^ (z))
+#define I(x, y, z) ((y) ^ ((x) | (~z)))
 
-#define ROTLEFT(a, b) ((a << b) | (a >> (32 - b)))
-
+#define FF(a,b,c,d,m,s,t) { a += F(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
+#define GG(a,b,c,d,m,s,t) { a += G(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
+#define HH(a,b,c,d,m,s,t) { a += H(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
+#define II(a,b,c,d,m,s,t) { a += I(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
