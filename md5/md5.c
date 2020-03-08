@@ -60,3 +60,39 @@ union bits {
   uint8_t readFile[64];
   uint8_t padding[64];
 };
+
+struct msg_block {
+  union bits curr_block;
+  uint32_t init_hash[4];
+};
+
+int main(int argc, char **argv) {
+  if (argc != 2) {
+    printf("Select a file: \n");
+    
+    return 1;
+  }
+  
+  FILE *file = fopen(argv[1], "rb");
+  
+  if(!file) {
+    printf("ERROR: Unable to open the file. Please try again");
+    
+    return 1;
+  } else {
+    struct msg_block value;
+    
+    initialise(&value);
+    
+    for(int i = 0; i< 4; i++) {
+      printf("%02x%02x%02x%02x",(value.init_hash[i] >> 0)&0x000000ff, 
+                                (value.init_hash[i] >> 8)&0x000000ff, 
+                                (value.init_hash[i] >> 16)&0x000000ff, 
+                                (value.init_hash[i] >> 24)&0x000000ff);
+    }
+  }
+  
+  fclose(file);
+  
+  return 0; 
+}
