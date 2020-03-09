@@ -1,0 +1,34 @@
+else if (check_bytes < 56 && check_bytes > 0) {
+      file_bits += (check_bytes * 8);
+
+      msg -> curr_block.padding[check_bytes] = BIT;
+
+      for(i = check_bytes + 1; i < 56; i++) {
+        msg -> curr_block.padding[i] = PADDING;
+      }
+
+      msg -> curr_block.file_size[7] = file_bits;
+
+      keepAlive = false;
+    } else if (check_bytes == 0 && padding_block == 0) {
+      msg -> curr_block.padding[0] = BIT;
+
+      for(i = 1; i < 56; i++) {
+        msg -> curr_block.padding[i] = PADDING;
+      }
+
+      msg -> curr_block.file_size[7] = file_bits;
+
+      keepAlive = false;
+    } else if (check_bytes == 0 && padding_block == 1) {
+      msg -> curr_block.padding[0] = PADDING;
+
+      for(i = 1; i < 56; i++) {
+        msg -> curr_block.padding[i] = PADDING;
+      }
+
+      msg -> curr_block.file_size[7] = file_bits;
+
+      keepAlive = false;
+    }
+  }

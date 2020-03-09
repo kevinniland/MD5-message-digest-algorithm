@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 const uint32_t K[64] = {
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -40,24 +41,25 @@ const uint32_t R[64] = {7, 12, 17, 22,
                         6, 10, 15, 21, 
                         6, 10, 15, 21};
 
+// https://tools.ietf.org/html/rfc1321
 #define ROTLEFT(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 #define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
 #define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
 #define H(x, y, z) ((x) ^ (y) ^ (z))
 #define I(x, y, z) ((y) ^ ((x) | (~z)))
 
-#define FF(a,b,c,d,m,s,t) { a += F(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
-#define GG(a,b,c,d,m,s,t) { a += G(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
-#define HH(a,b,c,d,m,s,t) { a += H(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
-#define II(a,b,c,d,m,s,t) { a += I(b,c,d) + m + t;  a = b + LEFTROTATE(a,s); }
+#define FF(a, b, c, d, m, s, t) { a += F(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
+#define GG(a, b, c, d, m, s, t) { a += G(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
+#define HH(a, b, c, d, m, s, t) { a += H(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
+#define II(a, b, c, d, m, s, t) { a += I(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
 
 const uint8_t PADDING = 0x00;
 const uint8_t BIT = 0x80;
 
 union bits {
-  uint64_t fileSize[8];
+  uint64_t file_size[8];
   uint32_t hash[16];
-  uint8_t readFile[64];
+  uint8_t read_file[64];
   uint8_t padding[64];
 };
 
@@ -66,15 +68,47 @@ struct msg_block {
   uint32_t init_hash[4];
 };
 
+void md5_init(struct msg_block *msg) {
+  msg -> init_hash[0] = 0x67452301;
+  msg -> init_hash[1] = 0xefcdab89;
+  msg -> init_hash[2] = 0x98badcfe;
+  msg -> init_hash[3] = 0x10325476;
+}
+
+void md5_transform(uint64_t file_bits, size_t check_bytes, struct msg_block *msg, int padding_block) {
+  file_bits += (check_bytes * 8);
+  padding_block = 1;
+
+  msg -> curr_block.padding[check_bytes] = BIT;
+
+  for (int i = check_bytes + 1; i < 64; i++) {
+    msg -> curr_block.padding[i] = PADDING;
+    }
+}
+
 void md5_hash(FILE *file, struct msg_block *msg) {
   uint32_t a, b, c, d, temp;
   uint64_t file_bits = 0;
-  int keepHashing = 1;
+  size_t check_bytes;
+  bool keepAlive = true;
   int padding_block = 0;
-  size_t check_size;
 
-  while (keepHashing) {
-    
+  while (keepAlive) {
+    check_bytes = fread(&msg -> curr_block.read_file, 1, 64, file);
+
+    if (check_bytes == 64) {
+      file_bits += 512;
+    } else if (check_bytes < 64 && check_bytes > 56) {
+      // file_bits += (check_bytes * 8);
+      // padding_block = 1;
+
+      // msg -> curr_block.padding[check_bytes] = BIT;
+
+      // for (i = check_bytes + 1; i < 64; i++) {
+      //   msg -> curr_block.padding[i] = PADDING;
+      // }
+      md5_transform(file_bits, check_bytes, msg, padding_block);
+    }
   }
 }
 
