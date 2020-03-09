@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include <md5.c>
 
 #pragma warning(disable:4996)
 
