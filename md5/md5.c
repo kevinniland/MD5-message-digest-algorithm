@@ -200,6 +200,28 @@ void md5_hash(FILE *file, struct msg_block *msg) {
       //   msg -> curr_block.padding[i] = PADDING;
       // }
       md5_hashing_one(file_bits, check_bytes, msg, padding_block);
+    } else if(check_bytes < 56 && check_bytes > 0) {
+      file_bits += (check_bytes * 8);
+
+      msg -> curr_block.padding[check_bytes] = BIT;
+
+      for(int i=check_bytes+1; i<56; i++) {
+        msg -> curr_block.padding[i] = PADDING;
+      }
+
+      msg -> curr_block.file_size[7] = file_bits;
+
+      keepAlive = false;
+    } else if(check_bytes == 0 && padding_block == 0) {
+      msg -> curr_block.padding[0] = BIT;
+
+      for(int i = 1; i < 56; i++) {
+        msg -> curr_block.padding[i] = PADDING;
+      }
+      
+      msg -> curr_block.file_size[7] = file_bits;
+
+      keepAlive = false;
     }
 
     md5_transform(msg);
