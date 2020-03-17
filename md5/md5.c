@@ -89,7 +89,7 @@ void md5_hashing_one(uint64_t file_bits, size_t check_bytes, struct msg_block *m
 void md5_transform(struct msg_block *msg) {
   int a, b, c, d, m[16], i, j;
 
-  for(int i = 0, j=0; i<16; ++i, j+=4) {
+  for(int i = 0, j = 0; i < 16; ++i, j += 4) {
     msg -> curr_block.hash[i] = 
     (msg -> curr_block.read_file[j]) + 
     (msg -> curr_block.read_file[j +1 ] << 8) + 
@@ -205,7 +205,7 @@ void md5_hash(FILE *file, struct msg_block *msg) {
 
       msg -> curr_block.padding[check_bytes] = BIT;
 
-      for(int i=check_bytes+1; i<56; i++) {
+      for(int i = check_bytes  +1; i < 56; i++) {
         msg -> curr_block.padding[i] = PADDING;
       }
 
@@ -219,6 +219,16 @@ void md5_hash(FILE *file, struct msg_block *msg) {
         msg -> curr_block.padding[i] = PADDING;
       }
       
+      msg -> curr_block.file_size[7] = file_bits;
+
+      keepAlive = false;
+    } else if(check_bytes == 0 && padding_block == 1) {
+      msg -> curr_block.padding[0] = PADDING;
+
+      for(int i=1; i<56; i++) {
+        msg -> curr_block.padding[i] = PADDING;
+      }
+
       msg -> curr_block.file_size[7] = file_bits;
 
       keepAlive = false;
