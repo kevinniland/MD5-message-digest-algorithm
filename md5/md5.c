@@ -224,25 +224,30 @@ int md5_padding(union msg_block *msg, uint64_t *nobits, enum status *status, FIL
   }
 }
 
+int main(int argc, char *argv[]) {
+  VAR value[] = { 
+    0x67452301, 
+    0xefcdab89, 
+    0x98badcfe, 
+    0x10325476 
+  };
 
+  union msg_block msg;
+  uint64_t bits = 0;
+  enum status status = READ;
 
+  FILE *file = fopen(argv[1], "rb");
+  
+  if (argc != 2) {
+    printf("ERROR: Expected single filename as argument");
 
+    return 1;
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  if (!file) {
+    printf("ERROR: Unable to open file: %s", argv[1]);
+  }
+}
 
 // struct msg_block {
 //   union msg_block curr_block;
