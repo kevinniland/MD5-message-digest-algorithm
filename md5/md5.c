@@ -67,17 +67,23 @@ const uint32_t K[64] = {
 // const uint8_t PADDING = 0x00;
 // const uint8_t BIT = 0x80;
 
+enum status {
+  NOSPACE,
+  READ,
+  ISFINISHED
+};
+
 union msg_block {
   uint64_t file_size[8];
   uint32_t hash[16];
   uint8_t read_file[64];
 };
 
-void md5_hash(union msg_block *msg, VAR *word) {
-  VAR a = word[0];
-  VAR b = word[1];
-  VAR c = word[2];
-  VAR d = word[3];
+void md5_hash(union msg_block *msg, VAR *value) {
+  VAR a = value[0];
+  VAR b = value[1];
+  VAR c = value[2];
+  VAR d = value[3];
   
   // Round 1 
   FF(a, b, c, d, msg -> hash[0],  7, 0xd76aa478);
@@ -151,9 +157,72 @@ void md5_hash(union msg_block *msg, VAR *word) {
   II(c, d, a, b, msg -> hash[2], 15, 0x2ad7d2bb);
   II(b, c, d, a, msg -> hash[9], 21, 0xeb86d391);
 
+  value[0] += a;
+  value[1] += b;
+  value[2] += c;
+  value[3] += d;
 }
 
+int md5_padding(union msg_block *msg, uint64_t *nobits, enum status *status, FILE *file) {
+  int i;
 
+  switch (*status) {
+    case NOSPACE:
+      for (i = 0; i < 56; i++) {
+        msg -> file_size[i] = 0;
+      }
+
+      msg -> read_file[7] = bswap_64(*nobits);
+
+      *status = ISFINISHED;
+
+      return 1;
+      break;
+    case ISFINISHED:
+      return 0;
+      break;
+
+    size_t bytes = fread(msg -> file_size, 1, 64, file);
+
+    if (bytes == 64) {
+      for (i = 0; i < 16; i++) {
+        msg -> hash[i] = bswap_32(msg -> hash[i]);
+      }
+
+      return 1;
+    } else if (bytes < 56) {
+      msg-> file_size[bytes] = 0x80;
+      
+      for (i = bytes + 1; i < 56; i++) {
+        msg -> file_size[i] = 0;
+      }
+      
+      for (int i = 0; i < 14; i++) {
+        msg -> hash[i] = bswap_32(msg -> hash[i]);
+      }
+
+      msg -> read_file[7] = bswap_64(*nobits);
+
+      *status = ISFINISHED;
+      
+      return 1;
+    }
+
+    msg -> file_size[bytes] = 0x80;
+
+    for (i = bytes + 1; i < 64; i++){
+        msg -> file_size[i] = 0; 
+    }
+
+    for (int i = 0; i < 16; i++){
+        msg -> hash[i] = bswap_32(msg -> hash[i]);
+    }
+
+    *status = NOSPACE;
+
+    return 1;
+  }
+}
 
 
 
