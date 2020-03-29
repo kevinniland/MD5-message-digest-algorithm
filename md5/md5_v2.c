@@ -19,10 +19,11 @@ const uint32_t K[64] = {
   0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
   0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
   0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
-  0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
-  };
+  0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
+// https://tools.ietf.org/html/rfc1321
 #define ROTLEFT(x, c) ((x << c) | (x >> (32 - c)))
+
 #define F(x, y, z) ((x & y) | (~x & z))
 #define G(x, y, z) ((x & z) | (y & ~z))
 #define H(x, y, z) (x ^ y ^ z)
@@ -33,10 +34,25 @@ const uint32_t K[64] = {
 #define HH(a, b, c, d, m, s, t) { a += H(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
 #define II(a, b, c, d, m, s, t) { a += I(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
 
+#define S7 7
+#define S12 12
+#define S17 17
+#define S22 22
+#define S5 5
+#define S9 9
+#define S14 14
+#define S20 20
+#define S4 4
+#define S11 11
+#define S16 16
+#define S23 23
+#define S6 6
+#define S10 10
+#define S15 15
+#define S21 21
+
 const uint8_t ZEROBIT = 0x00;
 const uint8_t BIT = 0x80;
-
-#define VAR uint32_t
 
 enum status {
   NOSPACE,
@@ -44,27 +60,37 @@ enum status {
   ISFINISHED
 };
 
-union union_padding{
+union block {
   uint64_t sixfour[8];
   uint32_t threetwo[16];
   uint8_t eight[64];
   uint8_t padding[64];
 };
 
-struct msg_block{
-  union union_padding curr_block;
-  uint32_t init_hash[4];
-};
+// MD5 context
+typedef struct {
+  union block union_block;
+  uint64_t sixfour[8];
+  uint32_t threetwo[16];
+  uint8_t eight[64];
+  uint8_t padding[64];
+  uint32_t state[4];
+} MD5_CTX;
 
-void md5_hash(FILE *file, struct msg_block *curr_msg) {
-  uint32_t a, b, c, d, temp;
+void md5_hash(FILE *file, MD5_CTX *md5_ctx) {
+  uint32_t a, b, c, d;
   uint64_t bitsInFile = 0;
   bool keepAlive = true;
   int specialPadding = 0;
   size_t check;
+  
+  a = md5_ctx -> state[0];
+  b = md5_ctx -> state[1];
+  c = md5_ctx -> state[2];
+  d = md5_ctx -> state[3];
 
-  while(keepAlive) {
-    check = fread(&curr_msg -> curr_block.eight, 1, 64, file);
+  while (keepAlive) {
+    check = fread(&md5_ctx -> union_block.eight, 1, 64, file);
 
     if (check == 64) {
       bitsInFile += 512;
@@ -72,168 +98,163 @@ void md5_hash(FILE *file, struct msg_block *curr_msg) {
       bitsInFile += (check * 8);
       specialPadding = 1;
 
-      curr_msg -> curr_block.padding[check] = BIT;
+      md5_ctx -> union_block.padding[check] = BIT;
 
       for (int i = check + 1; i < 64; i++) {
-        curr_msg -> curr_block.padding[i] = ZEROBIT;
+        md5_ctx -> union_block.padding[i] = ZEROBIT;
       }
     } else if( check < 56 && check > 0) {
       bitsInFile += (check * 8);
 
-      curr_msg -> curr_block.padding[check] = BIT;
+      md5_ctx -> union_block.padding[check] = BIT;
 
       for (int i = check + 1; i < 56; i++) {
-        curr_msg -> curr_block.padding[i] = ZEROBIT;
+        md5_ctx -> union_block.padding[i] = ZEROBIT;
       }
 
-      curr_msg -> curr_block.sixfour[7] = bitsInFile;
+      md5_ctx -> union_block.sixfour[7] = bitsInFile;
 
       keepAlive = false;
     } else if (check == 0 && specialPadding == 0) {
-      curr_msg -> curr_block.padding[0] = BIT;
+      md5_ctx -> union_block.padding[0] = BIT;
 
       for(int i = 1; i < 56; i++) {
-        curr_msg -> curr_block.padding[i] = ZEROBIT;
+        md5_ctx -> union_block.padding[i] = ZEROBIT;
       }
 
-      curr_msg -> curr_block.sixfour[7] = bitsInFile;
+      md5_ctx -> union_block.sixfour[7] = bitsInFile;
 
       keepAlive = false;
     } else if (check == 0 && specialPadding == 1) {
-      curr_msg -> curr_block.padding[0]=ZEROBIT;
+      md5_ctx -> union_block.padding[0]=ZEROBIT;
 
       for(int i = 1; i < 56; i++) {
-        curr_msg -> curr_block.padding[i] = ZEROBIT;
+        md5_ctx -> union_block.padding[i] = ZEROBIT;
       }
 
-      curr_msg -> curr_block.sixfour[7] = bitsInFile;
+      md5_ctx -> union_block.sixfour[7] = bitsInFile;
 
       keepAlive = false;
     }
-
-    for(int i = 0, j = 0; i < 16; ++i, j += 4) {
-        curr_msg -> curr_block.threetwo[i] = 
-                               (curr_msg -> curr_block.eight[j]) + 
-                               (curr_msg -> curr_block.eight[j + 1] << 8) + 
-                               (curr_msg -> curr_block.eight[j + 2] << 16) + 
-                               (curr_msg -> curr_block.eight[j + 3] << 24);
-    }
-
-    a = curr_msg -> init_hash[0];
-    b = curr_msg -> init_hash[1];
-    c = curr_msg -> init_hash[2];
-    d = curr_msg -> init_hash[3];
     
     // Round 1
-    FF(a, b, c, d, curr_msg -> curr_block.threetwo[0], 7, 0xd76aa478);
-    FF(d, a, b, c, curr_msg -> curr_block.threetwo[1], 12, 0xe8c7b756);
-    FF(c, d, a, b, curr_msg -> curr_block.threetwo[2], 17, 0x242070db);
-    FF(b, c, d, a, curr_msg -> curr_block.threetwo[3], 22, 0xc1bdceee);
-    FF(a, b, c, d, curr_msg -> curr_block.threetwo[4], 7, 0xf57c0faf);
-    FF(d, a, b, c, curr_msg -> curr_block.threetwo[5], 12, 0x4787c62a);
-    FF(c, d, a, b, curr_msg -> curr_block.threetwo[6], 17, 0xa8304613);
-    FF(b, c, d, a, curr_msg -> curr_block.threetwo[7], 22, 0xfd469501);
-    FF(a, b, c, d, curr_msg -> curr_block.threetwo[8], 7, 0x698098d8);
-    FF(d, a, b, c, curr_msg -> curr_block.threetwo[9], 12, 0x8b44f7af);
-    FF(c, d, a, b, curr_msg -> curr_block.threetwo[10], 17, 0xffff5bb1);
-    FF(b, c, d, a, curr_msg -> curr_block.threetwo[11], 22, 0x895cd7be);
-    FF(a, b, c, d, curr_msg -> curr_block.threetwo[12], 7, 0x6b901122);
-    FF(d, a, b, c, curr_msg -> curr_block.threetwo[13], 12, 0xfd987193);
-    FF(c, d, a, b, curr_msg -> curr_block.threetwo[14], 17, 0xa679438e);
-    FF(b, c, d, a, curr_msg -> curr_block.threetwo[15], 22, 0x49b40821);
+    FF(a, b, c, d, md5_ctx -> union_block.threetwo[0], S7, K[0]);
+    FF(d, a, b, c, md5_ctx -> union_block.threetwo[1], S12, K[1]);
+    FF(c, d, a, b, md5_ctx -> union_block.threetwo[2], S17, K[2]);
+    FF(b, c, d, a, md5_ctx -> union_block.threetwo[3], S22, K[3]);
+    FF(a, b, c, d, md5_ctx -> union_block.threetwo[4], S7, K[4]);
+    FF(d, a, b, c, md5_ctx -> union_block.threetwo[5], S12, K[5]);
+    FF(c, d, a, b, md5_ctx -> union_block.threetwo[6], S17, K[6]);
+    FF(b, c, d, a, md5_ctx -> union_block.threetwo[7], S22, K[7]);
+    FF(a, b, c, d, md5_ctx -> union_block.threetwo[8], S7, K[8]);
+    FF(d, a, b, c, md5_ctx -> union_block.threetwo[9], S12, K[9]);
+    FF(c, d, a, b, md5_ctx -> union_block.threetwo[10], S17, K[10]);
+    FF(b, c, d, a, md5_ctx -> union_block.threetwo[11], S22, K[11]);
+    FF(a, b, c, d, md5_ctx -> union_block.threetwo[12], S7, K[12]);
+    FF(d, a, b, c, md5_ctx -> union_block.threetwo[13], S12, K[13]);
+    FF(c, d, a, b, md5_ctx -> union_block.threetwo[14], S17, K[14]);
+    FF(b, c, d, a, md5_ctx -> union_block.threetwo[15], S22, K[15]);
 
     // Round 2
-    GG(a, b, c, d, curr_msg -> curr_block.threetwo[1], 5, 0xf61e2562);
-    GG(d, a, b, c, curr_msg -> curr_block.threetwo[6], 9, 0xc040b340);
-    GG(c, d, a, b, curr_msg -> curr_block.threetwo[11], 14, 0x265e5a51);
-    GG(b, c, d, a, curr_msg -> curr_block.threetwo[0], 20, 0xe9b6c7aa);
-    GG(a, b, c, d, curr_msg -> curr_block.threetwo[5], 5, 0xd62f105d);
-    GG(d, a, b, c, curr_msg -> curr_block.threetwo[10], 9, 0x02441453);
-    GG(c, d, a, b, curr_msg -> curr_block.threetwo[15], 14, 0xd8a1e681);
-    GG(b, c, d, a, curr_msg -> curr_block.threetwo[4], 20, 0xe7d3fbc8);
-    GG(a, b, c, d, curr_msg -> curr_block.threetwo[9], 5, 0x21e1cde6);
-    GG(d, a, b, c, curr_msg -> curr_block.threetwo[14], 9, 0xc33707d6);
-    GG(c, d, a, b, curr_msg -> curr_block.threetwo[3], 14, 0xf4d50d87);
-    GG(b, c, d, a, curr_msg -> curr_block.threetwo[8], 20, 0x455a14ed);
-    GG(a, b, c, d, curr_msg -> curr_block.threetwo[13], 5, 0xa9e3e905);
-    GG(d, a, b, c, curr_msg -> curr_block.threetwo[2], 9, 0xfcefa3f8);
-    GG(c, d, a, b, curr_msg -> curr_block.threetwo[7], 14, 0x676f02d9);
-    GG(b, c, d, a, curr_msg -> curr_block.threetwo[12], 20, 0x8d2a4c8a);
+    GG(a, b, c, d, md5_ctx -> union_block.threetwo[1], S5, K[16]);
+    GG(d, a, b, c, md5_ctx -> union_block.threetwo[6], S9, K[17]);
+    GG(c, d, a, b, md5_ctx -> union_block.threetwo[11], S14, K[18]);
+    GG(b, c, d, a, md5_ctx -> union_block.threetwo[0], S20, K[19]);
+    GG(a, b, c, d, md5_ctx -> union_block.threetwo[5], S5, K[20]);
+    GG(d, a, b, c, md5_ctx -> union_block.threetwo[10], S9, K[21]);
+    GG(c, d, a, b, md5_ctx -> union_block.threetwo[15], S14, K[22]);
+    GG(b, c, d, a, md5_ctx -> union_block.threetwo[4], S20, K[23]);
+    GG(a, b, c, d, md5_ctx -> union_block.threetwo[9], S5, K[24]);
+    GG(d, a, b, c, md5_ctx -> union_block.threetwo[14], S9, K[25]);
+    GG(c, d, a, b, md5_ctx -> union_block.threetwo[3], S14, K[26]);
+    GG(b, c, d, a, md5_ctx -> union_block.threetwo[8], S20, K[27]);
+    GG(a, b, c, d, md5_ctx -> union_block.threetwo[13], S5, K[28]);
+    GG(d, a, b, c, md5_ctx -> union_block.threetwo[2], S9, K[29]);
+    GG(c, d, a, b, md5_ctx -> union_block.threetwo[7], S14, K[30]);
+    GG(b, c, d, a, md5_ctx -> union_block.threetwo[12], S20, K[31]);
 
     // Round 3
-    HH(a, b, c, d, curr_msg -> curr_block.threetwo[5], 4, 0xfffa3942);
-    HH(d, a, b, c, curr_msg -> curr_block.threetwo[8], 11, 0x8771f681);
-    HH(c, d, a, b, curr_msg -> curr_block.threetwo[11], 16, 0x6d9d6122);
-    HH(b, c, d, a, curr_msg -> curr_block.threetwo[14], 23, 0xfde5380c);
-    HH(a, b, c, d, curr_msg -> curr_block.threetwo[1], 4, 0xa4beea44);
-    HH(d, a, b, c, curr_msg -> curr_block.threetwo[4], 11, 0x4bdecfa9);
-    HH(c, d, a, b, curr_msg -> curr_block.threetwo[7], 16, 0xf6bb4b60);
-    HH(b, c, d, a, curr_msg -> curr_block.threetwo[10], 23, 0xbebfbc70);
-    HH(a, b, c, d, curr_msg -> curr_block.threetwo[13], 4, 0x289b7ec6);
-    HH(d, a, b, c, curr_msg -> curr_block.threetwo[0], 11, 0xeaa127fa);
-    HH(c, d, a, b, curr_msg -> curr_block.threetwo[3], 16, 0xd4ef3085);
-    HH(b, c, d, a, curr_msg -> curr_block.threetwo[6], 23, 0x04881d05);
-    HH(a, b, c, d, curr_msg -> curr_block.threetwo[9], 4, 0xd9d4d039);
-    HH(d, a, b, c, curr_msg -> curr_block.threetwo[12], 11, 0xe6db99e5);
-    HH(c, d, a, b, curr_msg -> curr_block.threetwo[15], 16, 0x1fa27cf8);
-    HH(b, c, d, a, curr_msg -> curr_block.threetwo[2], 23, 0xc4ac5665);
+    HH(a, b, c, d, md5_ctx -> union_block.threetwo[5], S4, K[32]);
+    HH(d, a, b, c, md5_ctx -> union_block.threetwo[8], S11, K[33]);
+    HH(c, d, a, b, md5_ctx -> union_block.threetwo[11], S16, K[34]);
+    HH(b, c, d, a, md5_ctx -> union_block.threetwo[14], S23, K[35]);
+    HH(a, b, c, d, md5_ctx -> union_block.threetwo[1], S4, K[36]);
+    HH(d, a, b, c, md5_ctx -> union_block.threetwo[4], S11, K[37]);
+    HH(c, d, a, b, md5_ctx -> union_block.threetwo[7], S16, K[38]);
+    HH(b, c, d, a, md5_ctx -> union_block.threetwo[10], S23, K[39]);
+    HH(a, b, c, d, md5_ctx -> union_block.threetwo[13], S4, K[40]);
+    HH(d, a, b, c, md5_ctx -> union_block.threetwo[0], S11, K[41]);
+    HH(c, d, a, b, md5_ctx -> union_block.threetwo[3], S16, K[42]);
+    HH(b, c, d, a, md5_ctx -> union_block.threetwo[6], S23, K[43]);
+    HH(a, b, c, d, md5_ctx -> union_block.threetwo[9], S4, K[44]);
+    HH(d, a, b, c, md5_ctx -> union_block.threetwo[12], S11, K[45]);
+    HH(c, d, a, b, md5_ctx -> union_block.threetwo[15], S16, K[46]);
+    HH(b, c, d, a, md5_ctx -> union_block.threetwo[2], S23, K[47]);
 
     // Round 4
-    II(a, b, c, d, curr_msg -> curr_block.threetwo[0],  6, 0xf4292244);
-    II(d, a, b, c, curr_msg -> curr_block.threetwo[7], 10, 0x432aff97);
-    II(c, d, a, b, curr_msg -> curr_block.threetwo[14],15, 0xab9423a7);
-    II(b, c, d, a, curr_msg -> curr_block.threetwo[5], 21, 0xfc93a039);
-    II(a, b, c, d, curr_msg -> curr_block.threetwo[12], 6, 0x655b59c3);
-    II(d, a, b, c, curr_msg -> curr_block.threetwo[3], 10, 0x8f0ccc92);
-    II(c, d, a, b, curr_msg -> curr_block.threetwo[10],15, 0xffeff47d);
-    II(b, c, d, a, curr_msg -> curr_block.threetwo[1], 21, 0x85845dd1);
-    II(a, b, c, d, curr_msg -> curr_block.threetwo[8],  6, 0x6fa87e4f);
-    II(d, a, b, c, curr_msg -> curr_block.threetwo[15],10, 0xfe2ce6e0);
-    II(c, d, a, b, curr_msg -> curr_block.threetwo[6], 15, 0xa3014314);
-    II(b, c, d, a, curr_msg -> curr_block.threetwo[13],21, 0x4e0811a1);
-    II(a, b, c, d, curr_msg -> curr_block.threetwo[4],  6, 0xf7537e82);
-    II(d, a, b, c, curr_msg -> curr_block.threetwo[11],10, 0xbd3af235);
-    II(c, d, a, b, curr_msg -> curr_block.threetwo[2], 15, 0x2ad7d2bb);
-    II(b, c, d, a, curr_msg -> curr_block.threetwo[9], 21, 0xeb86d391);
+    II(a, b, c, d, md5_ctx -> union_block.threetwo[0], S6, K[48]);
+    II(d, a, b, c, md5_ctx -> union_block.threetwo[7], S10, K[49]);
+    II(c, d, a, b, md5_ctx -> union_block.threetwo[14], S15, K[50]);
+    II(b, c, d, a, md5_ctx -> union_block.threetwo[5], S21, K[51]);
+    II(a, b, c, d, md5_ctx -> union_block.threetwo[12], S6, K[52]);
+    II(d, a, b, c, md5_ctx -> union_block.threetwo[3], S10, K[53]);
+    II(c, d, a, b, md5_ctx -> union_block.threetwo[10], S15, K[54]);
+    II(b, c, d, a, md5_ctx -> union_block.threetwo[1], S21, K[55]);
+    II(a, b, c, d, md5_ctx -> union_block.threetwo[8], S6, K[56]);
+    II(d, a, b, c, md5_ctx -> union_block.threetwo[15], S10, K[57]);
+    II(c, d, a, b, md5_ctx -> union_block.threetwo[6], S15, K[58]);
+    II(b, c, d, a, md5_ctx -> union_block.threetwo[13], S21, K[59]);
+    II(a, b, c, d, md5_ctx -> union_block.threetwo[4], S6, K[60]);
+    II(d, a, b, c, md5_ctx -> union_block.threetwo[11], S10, K[61]);
+    II(c, d, a, b, md5_ctx -> union_block.threetwo[2], S15, K[62]);
+    II(b, c, d, a, md5_ctx -> union_block.threetwo[9], S21, K[63]);
     
-    curr_msg -> init_hash[0] += a;
-    curr_msg -> init_hash[1] += b;
-    curr_msg -> init_hash[2] += c;
-    curr_msg -> init_hash[3] += d;
+    
+    md5_ctx -> state[0] += a;
+    md5_ctx -> state[1] += b;
+    md5_ctx -> state[2] += c;
+    md5_ctx -> state[3] += d;
+
+    for(int i = 0, j = 0; i < 4; i++, j += 4) {
+      md5_ctx -> union_block.threetwo[j] = (md5_ctx -> union_block.eight[i] & 0xFF);
+      md5_ctx -> union_block.threetwo[j + 1] = ((md5_ctx -> union_block.eight[i]) >> 8 & 0xFF);
+      md5_ctx -> union_block.threetwo[j + 2] = ((md5_ctx -> union_block.eight[i]) >> 16 & 0xFF);
+      md5_ctx -> union_block.threetwo[j + 3] = ((md5_ctx -> union_block.eight[i]) >> 24 & 0xFF);
     }
+  }
 }
 
-void md5_init(struct msg_block *curr_msg) {
-  curr_msg -> init_hash[0] = 0x67452301;
-  curr_msg -> init_hash[1] = 0xefcdab89;
-  curr_msg -> init_hash[2] = 0x98badcfe;
-  curr_msg -> init_hash[3] = 0x10325476;
+void md5_init(MD5_CTX *md5_ctx) {
+  md5_ctx -> state[0] = 0x67452301;
+  md5_ctx -> state[1] = 0xefcdab89;
+  md5_ctx -> state[2] = 0x98badcfe;
+  md5_ctx -> state[3] = 0x10325476;
 }
 
 // Main
 int main(int argc, char **argv) {
-    FILE *file = fopen(argv[1],"rb");
+    FILE *file = fopen(argv[1], "rb");
     
-    if(argc!=2) {
+    if (argc!=2) {
         printf("Please select file. \n");
         return 1;
     }
 
-  if(!file) {
+  if (!file) {
     printf("ERROR: Unable to open file");
 
     return 1;
   } else {
-    struct msg_block hashedValue;
+    MD5_CTX hashedValue;
 
     md5_init(&hashedValue);
     md5_hash(file,&hashedValue);
 
     for(int i = 0; i < 4; i++) {
-      printf("%02x%02x%02x%02x", (hashedValue.init_hash[i] >> 0 )&0x000000ff, 
-                                (hashedValue.init_hash[i] >> 8)&0x000000ff, 
-                                (hashedValue.init_hash[i] >> 16)&0x000000ff, 
-                                (hashedValue.init_hash[i] >> 24)&0x000000ff);
+      printf("%02x%02x%02x%02x", (hashedValue.state[i] >> 0 )&0x000000ff, 
+                                (hashedValue.state[i] >> 8)&0x000000ff, 
+                                (hashedValue.state[i] >> 16)&0x000000ff, 
+                                (hashedValue.state[i] >> 24)&0x000000ff);
     }
   }
 
