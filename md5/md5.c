@@ -309,7 +309,7 @@ int main(int argc, char **argv) {
         md5_init(&md5_ctx_val);
         // md5_hash(string, &md5_ctx_val);
         
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 4; i++) { 
           printf("%02x%02x%02x%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff, (md5_ctx_val.state[i] >> 8) & 0x000000ff, (md5_ctx_val.state[i] >> 16) & 0x000000ff, (md5_ctx_val.state[i] >> 24) & 0x000000ff);
         }
 
