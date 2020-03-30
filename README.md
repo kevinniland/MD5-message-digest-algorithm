@@ -21,3 +21,8 @@
    2. To hash a string, choose option 2 and ...
    3. To exit the program, choose option 3.
 * Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
+
+## Project Overview and Developer Diary
+
+
+## References
