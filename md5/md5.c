@@ -7,6 +7,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Union block
+union block {
+  uint64_t sixfour[8];
+  uint32_t threetwo[16];
+  uint8_t eight[64];
+  uint8_t eight_pad[64];
+};
+
+// MD5 context
+typedef struct {
+  uint32_t state[4];
+} MD5_CTX;
+
+// MD5 function prototypes
+void md5_init(MD5_CTX *md5_ctx);
+FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file);
+
 // Pre-defined hash values used for transform rounds 1, 2, 3, and 4
 const uint32_t K[64] = {
   0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -62,7 +79,7 @@ const uint32_t K[64] = {
 #define HH(a, b, c, d, m, s, t) { a += H(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
 #define II(a, b, c, d, m, s, t) { a += I(b, c, d) + m + t;  a = b + ROTLEFT(a, s); }
 
-// Constants for md5_hash
+// Constants for md5_hash function
 #define S7 7
 #define S12 12
 #define S17 17
@@ -82,26 +99,9 @@ const uint32_t K[64] = {
 
 #define FNSZ 128
 
+// Bits for manual padding
 const uint8_t ZEROBIT = 0x00;
 const uint8_t ONEBIT = 0x80;
-
-// Union block
-union block {
-  uint64_t sixfour[8];
-  uint32_t threetwo[16];
-  uint8_t eight[64];
-  uint8_t padding[64];
-};
-
-// MD5 context
-typedef struct {
-  union block union_block;
-  uint64_t sixfour[8];
-  uint32_t threetwo[16];
-  uint8_t eight[64];
-  uint8_t padding[64];
-  uint32_t state[4];
-} MD5_CTX;
 
 // MD5 initialization method - Begins an MD5 operation
 void md5_init(MD5_CTX *md5_ctx) {
@@ -112,36 +112,29 @@ void md5_init(MD5_CTX *md5_ctx) {
   md5_ctx -> state[3] = 0x10325476;
 }
 
-// void writeToFile(char string[]) {
-//   FILE *fptr;
-
-//   fptr = fopen("userFile.txt", "w");
-
-//   printf("Enter a string: \n");
-//   fgets(string, sizeof(string), stdin);
-//   fprintf(fptr, "%s", string);
-//   fclose(fptr);
-//   // printf("String Output: ");
-//   // puts(string);
-// }
-
 // Performs the MD5 message digest
 FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
+  // File pointer
   FILE *fptr;
 
+  // Stores previous hash values
   uint32_t a, b, c, d;
-  uint64_t file_bits = 0;
+
+  // Keeps track of bits
+  uint64_t counter = 0;
   size_t size;
   
   bool keepAlive = true;
-  int pad = 0;
+  int i, pad = 0;
   char line;
   
+  // Assign initial values to temp variables in memory
   a = md5_ctx -> state[0];
   b = md5_ctx -> state[1];
   c = md5_ctx -> state[2];
   d = md5_ctx -> state[3];
 
+  // Open file
   fptr = fopen (file, "r");
   printf("\nFile: %s\n", file);
   printf("String hash: ");
@@ -153,58 +146,66 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   //   line = fgetc(fptr);
   // }
 
+  // Checks if file exists
   if (fptr == NULL) {
     fprintf(stderr, "ERROR: File %s does not exist", file);
   }
 
+  // Padding
   while (keepAlive) {
     size = fread(&B -> eight, 1, 64, fptr);
 
+    // If size is equal to 64, continue - no padding needed
     if (size == 64) {
-      file_bits += 512;
-    } else if (size < 64 && size > 56) {
-      file_bits += (size * 8);
+      counter += 512;
+    } else if (size > 56 && size < 64) { // If size is greater than 56 and less than 64, not enough space for 64 bits at end of file
+      counter += (size * 8);
       pad = 1;
 
-      B -> padding[size] = ONEBIT;
+      // Pad out to end of block
+      B -> eight_pad[size] = ONEBIT;
 
-      for (int i = size + 1; i < 64; i++) {
-        B -> padding[i] = ZEROBIT;
+      for (i = size + 1; i < 64; i++) {
+        B -> eight_pad[i] = ZEROBIT;
       }
-    } else if( size < 56 && size > 0) {
-      file_bits += (size * 8);
+    } else if(size > 0 && size < 56) { 
+      counter += (size * 8);
 
-      B -> padding[size] = ONEBIT;
+      B -> eight_pad[size] = ONEBIT;
 
-      for (int i = size + 1; i < 56; i++) {
-        B -> padding[i] = ZEROBIT;
+      for (i = size + 1; i < 56; i++) {
+        B -> eight_pad[i] = ZEROBIT;
       }
 
-      B -> sixfour[7] = file_bits;
+      B -> sixfour[7] = counter;
 
       keepAlive = false;
     } else if (size == 0 && pad == 0) {
-      B -> padding[0] = ONEBIT;
+      B -> eight_pad[0] = ONEBIT;
 
-      for(int i = 1; i < 56; i++) {
-        B -> padding[i] = ZEROBIT;
+      for(i = 1; i < 56; i++) {
+        B -> eight_pad[i] = ZEROBIT;
       }
 
-      B -> sixfour[7] = file_bits;
+      B -> sixfour[7] = counter;
 
       keepAlive = false;
     } else if (size == 0 && pad == 1) {
-      B -> padding[0]=ZEROBIT;
+      B -> eight_pad[0]=ZEROBIT;
 
-      for(int i = 1; i < 56; i++) {
-        B -> padding[i] = ZEROBIT;
+      for(i = 1; i < 56; i++) {
+        B -> eight_pad[i] = ZEROBIT;
       }
 
-      B -> sixfour[7] = file_bits;
+      B -> sixfour[7] = counter;
 
       keepAlive = false;
     }
     
+    /**
+     * Adapted from: https://github.com/Souravpunoriyar/md5-in-c and https://tools.ietf.org/html/rfc1321
+     */
+
     // Round 1 - FF function
     FF(a, b, c, d, B -> threetwo[0], S7, K[0]);
     FF(d, a, b, c, B -> threetwo[1], S12, K[1]);
@@ -293,7 +294,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   }
 }
 
-// Main
+// Main function
 int main(int argc, char **argv) {
   FILE *file = fopen("userfile.txt", "w");
   MD5_CTX md5_ctx_val;
@@ -306,6 +307,7 @@ int main(int argc, char **argv) {
 
   printf("\nMD5 Message Digest Implementation");
   printf("\n=================================\n");
+
   // Menu - User can perform MD5 message digest on a given string or file
   printf("Enter 1 to pass in a file,\n"); 
   printf("Enter 2 to pass in a string or\n");
@@ -333,6 +335,7 @@ int main(int argc, char **argv) {
           return 1;
         }
 
+        // Display results of MD5 digest
         for(i = 0; i < 4; i++) {
           printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
           printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
@@ -376,6 +379,7 @@ int main(int argc, char **argv) {
 
         break;
         case 3:
+          // Terminate the program
           exit(1);
           printf("Terminating program...");
 
