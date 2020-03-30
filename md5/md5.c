@@ -80,8 +80,10 @@ const uint32_t K[64] = {
 #define S15 15
 #define S21 21
 
+#define FNSZ 128
+
 const uint8_t ZEROBIT = 0x00;
-const uint8_t BIT = 0x80;
+const uint8_t ONEBIT = 0x80;
 
 // Union block
 union block {
@@ -110,139 +112,170 @@ void md5_init(MD5_CTX *md5_ctx) {
   md5_ctx -> state[3] = 0x10325476;
 }
 
+// void writeToFile(char string[]) {
+//   FILE *fptr;
+
+//   fptr = fopen("userFile.txt", "w");
+
+//   printf("Enter a string: \n");
+//   fgets(string, sizeof(string), stdin);
+//   fprintf(fptr, "%s", string);
+//   fclose(fptr);
+//   // printf("String Output: ");
+//   // puts(string);
+// }
+
 // Performs the MD5 message digest
-void md5_hash(FILE *file, MD5_CTX *md5_ctx) {
-// void md5_hash(unsigned char *input, MD5_CTX *md5_ctx) {
+FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
+  FILE *fptr;
+
   uint32_t a, b, c, d;
   uint64_t file_bits = 0;
+  size_t size;
+  
   bool keepAlive = true;
-  int specialPadding = 0;
-  size_t check;
+  int pad = 0;
+  char line;
   
   a = md5_ctx -> state[0];
   b = md5_ctx -> state[1];
   c = md5_ctx -> state[2];
   d = md5_ctx -> state[3];
 
+  fptr = fopen (file, "r");
+  printf("\nFile: %s\n", file);
+  printf("String hash: ");
+
+  // printf("File text: ");
+
+  // while ((line = fgetc(fptr)) != EOF) {
+  //   printf("%c\n", line);
+  //   line = fgetc(fptr);
+  // }
+
+  if (fptr == NULL) {
+    fprintf(stderr, "ERROR: File %s does not exist", file);
+  }
+
   while (keepAlive) {
-    check = fread(&md5_ctx -> union_block.eight, 1, 64, file);
+    size = fread(&B -> eight, 1, 64, fptr);
 
-    if (check == 64) {
+    if (size == 64) {
       file_bits += 512;
-    } else if (check < 64 && check > 56) {
-      file_bits += (check * 8);
-      specialPadding = 1;
+    } else if (size < 64 && size > 56) {
+      file_bits += (size * 8);
+      pad = 1;
 
-      md5_ctx -> union_block.padding[check] = BIT;
+      B -> padding[size] = ONEBIT;
 
-      for (int i = check + 1; i < 64; i++) {
-        md5_ctx -> union_block.padding[i] = ZEROBIT;
+      for (int i = size + 1; i < 64; i++) {
+        B -> padding[i] = ZEROBIT;
       }
-    } else if( check < 56 && check > 0) {
-      file_bits += (check * 8);
+    } else if( size < 56 && size > 0) {
+      file_bits += (size * 8);
 
-      md5_ctx -> union_block.padding[check] = BIT;
+      B -> padding[size] = ONEBIT;
 
-      for (int i = check + 1; i < 56; i++) {
-        md5_ctx -> union_block.padding[i] = ZEROBIT;
+      for (int i = size + 1; i < 56; i++) {
+        B -> padding[i] = ZEROBIT;
       }
 
-      md5_ctx -> union_block.sixfour[7] = file_bits;
+      B -> sixfour[7] = file_bits;
 
       keepAlive = false;
-    } else if (check == 0 && specialPadding == 0) {
-      md5_ctx -> union_block.padding[0] = BIT;
+    } else if (size == 0 && pad == 0) {
+      B -> padding[0] = ONEBIT;
 
       for(int i = 1; i < 56; i++) {
-        md5_ctx -> union_block.padding[i] = ZEROBIT;
+        B -> padding[i] = ZEROBIT;
       }
 
-      md5_ctx -> union_block.sixfour[7] = file_bits;
+      B -> sixfour[7] = file_bits;
 
       keepAlive = false;
-    } else if (check == 0 && specialPadding == 1) {
-      md5_ctx -> union_block.padding[0]=ZEROBIT;
+    } else if (size == 0 && pad == 1) {
+      B -> padding[0]=ZEROBIT;
 
       for(int i = 1; i < 56; i++) {
-        md5_ctx -> union_block.padding[i] = ZEROBIT;
+        B -> padding[i] = ZEROBIT;
       }
 
-      md5_ctx -> union_block.sixfour[7] = file_bits;
+      B -> sixfour[7] = file_bits;
 
       keepAlive = false;
     }
     
     // Round 1 - FF function
-    FF(a, b, c, d, md5_ctx -> union_block.threetwo[0], S7, K[0]);
-    FF(d, a, b, c, md5_ctx -> union_block.threetwo[1], S12, K[1]);
-    FF(c, d, a, b, md5_ctx -> union_block.threetwo[2], S17, K[2]);
-    FF(b, c, d, a, md5_ctx -> union_block.threetwo[3], S22, K[3]);
-    FF(a, b, c, d, md5_ctx -> union_block.threetwo[4], S7, K[4]);
-    FF(d, a, b, c, md5_ctx -> union_block.threetwo[5], S12, K[5]);
-    FF(c, d, a, b, md5_ctx -> union_block.threetwo[6], S17, K[6]);
-    FF(b, c, d, a, md5_ctx -> union_block.threetwo[7], S22, K[7]);
-    FF(a, b, c, d, md5_ctx -> union_block.threetwo[8], S7, K[8]);
-    FF(d, a, b, c, md5_ctx -> union_block.threetwo[9], S12, K[9]);
-    FF(c, d, a, b, md5_ctx -> union_block.threetwo[10], S17, K[10]);
-    FF(b, c, d, a, md5_ctx -> union_block.threetwo[11], S22, K[11]);
-    FF(a, b, c, d, md5_ctx -> union_block.threetwo[12], S7, K[12]);
-    FF(d, a, b, c, md5_ctx -> union_block.threetwo[13], S12, K[13]);
-    FF(c, d, a, b, md5_ctx -> union_block.threetwo[14], S17, K[14]);
-    FF(b, c, d, a, md5_ctx -> union_block.threetwo[15], S22, K[15]);
+    FF(a, b, c, d, B -> threetwo[0], S7, K[0]);
+    FF(d, a, b, c, B -> threetwo[1], S12, K[1]);
+    FF(c, d, a, b, B -> threetwo[2], S17, K[2]);
+    FF(b, c, d, a, B -> threetwo[3], S22, K[3]);
+    FF(a, b, c, d, B -> threetwo[4], S7, K[4]);
+    FF(d, a, b, c, B -> threetwo[5], S12, K[5]);
+    FF(c, d, a, b, B -> threetwo[6], S17, K[6]);
+    FF(b, c, d, a, B -> threetwo[7], S22, K[7]);
+    FF(a, b, c, d, B -> threetwo[8], S7, K[8]);
+    FF(d, a, b, c, B -> threetwo[9], S12, K[9]);
+    FF(c, d, a, b, B -> threetwo[10], S17, K[10]);
+    FF(b, c, d, a, B -> threetwo[11], S22, K[11]);
+    FF(a, b, c, d, B -> threetwo[12], S7, K[12]);
+    FF(d, a, b, c, B -> threetwo[13], S12, K[13]);
+    FF(c, d, a, b, B -> threetwo[14], S17, K[14]);
+    FF(b, c, d, a, B -> threetwo[15], S22, K[15]);
 
     // Round 2 - GG function
-    GG(a, b, c, d, md5_ctx -> union_block.threetwo[1], S5, K[16]);
-    GG(d, a, b, c, md5_ctx -> union_block.threetwo[6], S9, K[17]);
-    GG(c, d, a, b, md5_ctx -> union_block.threetwo[11], S14, K[18]);
-    GG(b, c, d, a, md5_ctx -> union_block.threetwo[0], S20, K[19]);
-    GG(a, b, c, d, md5_ctx -> union_block.threetwo[5], S5, K[20]);
-    GG(d, a, b, c, md5_ctx -> union_block.threetwo[10], S9, K[21]);
-    GG(c, d, a, b, md5_ctx -> union_block.threetwo[15], S14, K[22]);
-    GG(b, c, d, a, md5_ctx -> union_block.threetwo[4], S20, K[23]);
-    GG(a, b, c, d, md5_ctx -> union_block.threetwo[9], S5, K[24]);
-    GG(d, a, b, c, md5_ctx -> union_block.threetwo[14], S9, K[25]);
-    GG(c, d, a, b, md5_ctx -> union_block.threetwo[3], S14, K[26]);
-    GG(b, c, d, a, md5_ctx -> union_block.threetwo[8], S20, K[27]);
-    GG(a, b, c, d, md5_ctx -> union_block.threetwo[13], S5, K[28]);
-    GG(d, a, b, c, md5_ctx -> union_block.threetwo[2], S9, K[29]);
-    GG(c, d, a, b, md5_ctx -> union_block.threetwo[7], S14, K[30]);
-    GG(b, c, d, a, md5_ctx -> union_block.threetwo[12], S20, K[31]);
+    GG(a, b, c, d, B -> threetwo[1], S5, K[16]);
+    GG(d, a, b, c, B -> threetwo[6], S9, K[17]);
+    GG(c, d, a, b, B -> threetwo[11], S14, K[18]);
+    GG(b, c, d, a, B -> threetwo[0], S20, K[19]);
+    GG(a, b, c, d, B -> threetwo[5], S5, K[20]);
+    GG(d, a, b, c, B -> threetwo[10], S9, K[21]);
+    GG(c, d, a, b, B -> threetwo[15], S14, K[22]);
+    GG(b, c, d, a, B -> threetwo[4], S20, K[23]);
+    GG(a, b, c, d, B -> threetwo[9], S5, K[24]);
+    GG(d, a, b, c, B -> threetwo[14], S9, K[25]);
+    GG(c, d, a, b, B -> threetwo[3], S14, K[26]);
+    GG(b, c, d, a, B -> threetwo[8], S20, K[27]);
+    GG(a, b, c, d, B -> threetwo[13], S5, K[28]);
+    GG(d, a, b, c, B -> threetwo[2], S9, K[29]);
+    GG(c, d, a, b, B -> threetwo[7], S14, K[30]);
+    GG(b, c, d, a, B -> threetwo[12], S20, K[31]);
 
     // Round 3 - HH function
-    HH(a, b, c, d, md5_ctx -> union_block.threetwo[5], S4, K[32]);
-    HH(d, a, b, c, md5_ctx -> union_block.threetwo[8], S11, K[33]);
-    HH(c, d, a, b, md5_ctx -> union_block.threetwo[11], S16, K[34]);
-    HH(b, c, d, a, md5_ctx -> union_block.threetwo[14], S23, K[35]);
-    HH(a, b, c, d, md5_ctx -> union_block.threetwo[1], S4, K[36]);
-    HH(d, a, b, c, md5_ctx -> union_block.threetwo[4], S11, K[37]);
-    HH(c, d, a, b, md5_ctx -> union_block.threetwo[7], S16, K[38]);
-    HH(b, c, d, a, md5_ctx -> union_block.threetwo[10], S23, K[39]);
-    HH(a, b, c, d, md5_ctx -> union_block.threetwo[13], S4, K[40]);
-    HH(d, a, b, c, md5_ctx -> union_block.threetwo[0], S11, K[41]);
-    HH(c, d, a, b, md5_ctx -> union_block.threetwo[3], S16, K[42]);
-    HH(b, c, d, a, md5_ctx -> union_block.threetwo[6], S23, K[43]);
-    HH(a, b, c, d, md5_ctx -> union_block.threetwo[9], S4, K[44]);
-    HH(d, a, b, c, md5_ctx -> union_block.threetwo[12], S11, K[45]);
-    HH(c, d, a, b, md5_ctx -> union_block.threetwo[15], S16, K[46]);
-    HH(b, c, d, a, md5_ctx -> union_block.threetwo[2], S23, K[47]);
+    HH(a, b, c, d, B -> threetwo[5], S4, K[32]);
+    HH(d, a, b, c, B -> threetwo[8], S11, K[33]);
+    HH(c, d, a, b, B -> threetwo[11], S16, K[34]);
+    HH(b, c, d, a, B -> threetwo[14], S23, K[35]);
+    HH(a, b, c, d, B -> threetwo[1], S4, K[36]);
+    HH(d, a, b, c, B -> threetwo[4], S11, K[37]);
+    HH(c, d, a, b, B -> threetwo[7], S16, K[38]);
+    HH(b, c, d, a, B -> threetwo[10], S23, K[39]);
+    HH(a, b, c, d, B -> threetwo[13], S4, K[40]);
+    HH(d, a, b, c, B -> threetwo[0], S11, K[41]);
+    HH(c, d, a, b, B -> threetwo[3], S16, K[42]);
+    HH(b, c, d, a, B -> threetwo[6], S23, K[43]);
+    HH(a, b, c, d, B -> threetwo[9], S4, K[44]);
+    HH(d, a, b, c, B -> threetwo[12], S11, K[45]);
+    HH(c, d, a, b, B -> threetwo[15], S16, K[46]);
+    HH(b, c, d, a, B -> threetwo[2], S23, K[47]);
 
     // Round 4 - II function
-    II(a, b, c, d, md5_ctx -> union_block.threetwo[0], S6, K[48]);
-    II(d, a, b, c, md5_ctx -> union_block.threetwo[7], S10, K[49]);
-    II(c, d, a, b, md5_ctx -> union_block.threetwo[14], S15, K[50]);
-    II(b, c, d, a, md5_ctx -> union_block.threetwo[5], S21, K[51]);
-    II(a, b, c, d, md5_ctx -> union_block.threetwo[12], S6, K[52]);
-    II(d, a, b, c, md5_ctx -> union_block.threetwo[3], S10, K[53]);
-    II(c, d, a, b, md5_ctx -> union_block.threetwo[10], S15, K[54]);
-    II(b, c, d, a, md5_ctx -> union_block.threetwo[1], S21, K[55]);
-    II(a, b, c, d, md5_ctx -> union_block.threetwo[8], S6, K[56]);
-    II(d, a, b, c, md5_ctx -> union_block.threetwo[15], S10, K[57]);
-    II(c, d, a, b, md5_ctx -> union_block.threetwo[6], S15, K[58]);
-    II(b, c, d, a, md5_ctx -> union_block.threetwo[13], S21, K[59]);
-    II(a, b, c, d, md5_ctx -> union_block.threetwo[4], S6, K[60]);
-    II(d, a, b, c, md5_ctx -> union_block.threetwo[11], S10, K[61]);
-    II(c, d, a, b, md5_ctx -> union_block.threetwo[2], S15, K[62]);
-    II(b, c, d, a, md5_ctx -> union_block.threetwo[9], S21, K[63]);
+    II(a, b, c, d, B -> threetwo[0], S6, K[48]);
+    II(d, a, b, c, B -> threetwo[7], S10, K[49]);
+    II(c, d, a, b, B -> threetwo[14], S15, K[50]);
+    II(b, c, d, a, B -> threetwo[5], S21, K[51]);
+    II(a, b, c, d, B -> threetwo[12], S6, K[52]);
+    II(d, a, b, c, B -> threetwo[3], S10, K[53]);
+    II(c, d, a, b, B -> threetwo[10], S15, K[54]);
+    II(b, c, d, a, B -> threetwo[1], S21, K[55]);
+    II(a, b, c, d, B -> threetwo[8], S6, K[56]);
+    II(d, a, b, c, B -> threetwo[15], S10, K[57]);
+    II(c, d, a, b, B -> threetwo[6], S15, K[58]);
+    II(b, c, d, a, B -> threetwo[13], S21, K[59]);
+    II(a, b, c, d, B -> threetwo[4], S6, K[60]);
+    II(d, a, b, c, B -> threetwo[11], S10, K[61]);
+    II(c, d, a, b, B -> threetwo[2], S15, K[62]);
+    II(b, c, d, a, B -> threetwo[9], S21, K[63]);
     
     // Update states after rounds
     md5_ctx -> state[0] += a;
@@ -252,72 +285,109 @@ void md5_hash(FILE *file, MD5_CTX *md5_ctx) {
 
     // Update final digest value
     for(int i = 0, j = 0; i < 4; i++, j += 4) {
-      md5_ctx -> union_block.threetwo[j] = (md5_ctx -> union_block.eight[i] & 0xFF);
-      md5_ctx -> union_block.threetwo[j + 1] = ((md5_ctx -> union_block.eight[i]) >> 8 & 0xFF);
-      md5_ctx -> union_block.threetwo[j + 2] = ((md5_ctx -> union_block.eight[i]) >> 16 & 0xFF);
-      md5_ctx -> union_block.threetwo[j + 3] = ((md5_ctx -> union_block.eight[i]) >> 24 & 0xFF);
+      B -> threetwo[j] = (B -> eight[i] & 0xFF);
+      B -> threetwo[j + 1] = ((B -> eight[i]) >> 8 & 0xFF);
+      B -> threetwo[j + 2] = ((B -> eight[i]) >> 16 & 0xFF);
+      B -> threetwo[j + 3] = ((B -> eight[i]) >> 24 & 0xFF);
     }
   }
 }
 
 // Main
 int main(int argc, char **argv) {
+  FILE *file = fopen("userfile.txt", "w");
   MD5_CTX md5_ctx_val;
-  FILE *file = fopen(argv[1], "rb");
+  union block B;
   bool keepAlive = true;
   int menuOption, i;
   unsigned int input;
+  char file_name[FNSZ] = {0};
   char string[100];
-  
-  // if (argc != 2) {
-  //   printf("Please select file. \n");
-  //   return 1;
-  // }
 
-  // if (!file) {
-  //   printf("ERROR: Unable to open file");
-
-  //   return 1;
-  // } else {
-  //   md5_init(&md5_ctx_val);
-  //   md5_hash(file, &md5_ctx_val);
-
-  //   for(i = 0; i < 4; i++) {
-  //     printf("%02x%02x%02x%02x", (md5_ctx_val.state[i] >> 0 )&0x000000ff, 
-  //                               (md5_ctx_val.state[i] >> 8)&0x000000ff, 
-  //                               (md5_ctx_val.state[i] >> 16)&0x000000ff, 
-  //                               (md5_ctx_val.state[i] >> 24)&0x000000ff);
-  //   }
-  // }
-
+  printf("\nMD5 Message Digest Implementation");
+  printf("\n=================================\n");
   // Menu - User can perform MD5 message digest on a given string or file
   printf("Enter 1 to pass in a file,\n"); 
   printf("Enter 2 to pass in a string or\n");
-  printf("Enter 3 to exit: \n");  
+  printf("Enter 3 to exit: ");  
 	scanf("%d", &menuOption);
 
-  while (keepAlive) {
+  while (keepAlive = true) {
     switch (menuOption) {
+      // Adapted from: https://stackoverflow.com/a/34738555/8721358
       case 1:
-        // File stuff
+        printf("Enter a file name: ");
+        
+        if (scanf ("%127s%*c", file_name) != 1) {
+          fprintf (stderr, "ERROR: file_name entry failed.\n");
+
+          return 1;
+        }
+        
+        md5_init(&md5_ctx_val);
+        file = md5_hash(&md5_ctx_val, &B, file_name);
+
+        if (!file) {
+          fprintf (stderr, "ERROR: Failed to open file '%s'\n", file_name);
+
+          return 1;
+        }
+
+        for(i = 0; i < 4; i++) {
+          printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+          printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+          printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+          printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+        }
+
         break;
       case 2:
-        printf("Enter a string: ");
-        scanf("%s", string);
-        input = strlen(string);
+        /**
+         * Not perfect - string is first written to file and is then hashed
+         * Could have been done better - md5_hash function was written to work with files specifically
+         */ 
+        // printf("Enter a string: ");
+        // fgets(string, sizeof(string), stdin);
+        // fprintf(file, "%s", string);
 
-        md5_init(&md5_ctx_val);
-        // md5_hash(string, &md5_ctx_val);
+        // printf("Enter a file name where string is contained: ");
         
-        for (i = 0; i < 4; i++) { 
-          printf("%02x%02x%02x%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff, (md5_ctx_val.state[i] >> 8) & 0x000000ff, (md5_ctx_val.state[i] >> 16) & 0x000000ff, (md5_ctx_val.state[i] >> 24) & 0x000000ff);
-        }
+        // if (scanf ("%127s%*c", file_name) != 1) {
+        //   fprintf (stderr, "ERROR: file_name entry failed.\n");
+
+        //   return 1;
+        // }
+        
+        // md5_init(&md5_ctx_val);
+        // file = md5_hash(file_name, &md5_ctx_val);
+
+        // if (!file) {
+        //   fprintf (stderr, "ERROR: Failed to open file '%s'\n", file_name);
+
+        //   return 1;
+        // }
+
+        // for(i = 0; i < 4; i++) {
+        //   printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+        //   printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+        //   printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+        //   printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+        // }
 
         break;
         case 3:
           exit(1);
+          printf("Terminating program...");
+
+          break;
+        default:
           break;
     }
+    
+    printf("\n\nEnter 1 to pass in a file,\n"); 
+    printf("Enter 2 to pass in a string or\n");
+    printf("Enter 3 to exit: ");  
+	  scanf("%d", &menuOption);
   }
 
   fclose(file);
