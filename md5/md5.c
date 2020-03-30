@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // Pre-defined hash values used for transform rounds 1, 2, 3, and 4
 const uint32_t K[64] = {
@@ -110,6 +112,7 @@ void md5_init(MD5_CTX *md5_ctx) {
 
 // Performs the MD5 message digest
 void md5_hash(FILE *file, MD5_CTX *md5_ctx) {
+// void md5_hash(unsigned char *input, MD5_CTX *md5_ctx) {
   uint32_t a, b, c, d;
   uint64_t file_bits = 0;
   bool keepAlive = true;
@@ -261,8 +264,10 @@ void md5_hash(FILE *file, MD5_CTX *md5_ctx) {
 int main(int argc, char **argv) {
   MD5_CTX md5_ctx_val;
   FILE *file = fopen(argv[1], "rb");
-  int option, i;
-  char optionVal[50];
+  bool keepAlive = true;
+  int menuOption, i;
+  unsigned int input;
+  char string[100];
   
   // if (argc != 2) {
   //   printf("Please select file. \n");
@@ -286,10 +291,34 @@ int main(int argc, char **argv) {
   // }
 
   // Menu - User can perform MD5 message digest on a given string or file
-  printf("Enter 1 to pass in a string to,\n"); 
-  printf("Enter 2 to pass in a file or\n");
+  printf("Enter 1 to pass in a file,\n"); 
+  printf("Enter 2 to pass in a string or\n");
   printf("Enter 3 to exit: \n");  
-	scanf("%d", &option);
+	scanf("%d", &menuOption);
+
+  while (keepAlive) {
+    switch (menuOption) {
+      case 1:
+        // File stuff
+        break;
+      case 2:
+        printf("Enter a string: ");
+        scanf("%s", string);
+        input = strlen(string);
+
+        md5_init(&md5_ctx_val);
+        // md5_hash(string, &md5_ctx_val);
+        
+        for (i = 0; i < 4; i++) {
+          printf("%02x%02x%02x%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff, (md5_ctx_val.state[i] >> 8) & 0x000000ff, (md5_ctx_val.state[i] >> 16) & 0x000000ff, (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+        }
+
+        break;
+        case 3:
+          exit(1);
+          break;
+    }
+  }
 
   fclose(file);
   
