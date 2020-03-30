@@ -12,3 +12,5 @@
 * G00342279
 
 ### How to run
+* Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`
+*
