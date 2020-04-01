@@ -126,7 +126,6 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   
   bool keepAlive = true;
   int i, pad = 0;
-  char line;
   
   // Assign initial values to temp variables in memory
   a = md5_ctx -> state[0];
@@ -135,16 +134,10 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   d = md5_ctx -> state[3];
 
   // Open file
-  fptr = fopen (file, "r");
+  fptr = fopen(file, "r");
+
   printf("\nFile: %s\n", file);
   printf("String hash: ");
-
-  // printf("File text: ");
-
-  // while ((line = fgetc(fptr)) != EOF) {
-  //   printf("%c\n", line);
-  //   line = fgetc(fptr);
-  // }
 
   // Checks if file exists
   if (fptr == NULL) {
@@ -296,20 +289,22 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
 // Main function
 int main(int argc, char **argv) {
-  FILE *file = fopen("userfile.txt", "w");
+  FILE *file = NULL;
+  FILE *fptr;
   MD5_CTX md5_ctx_val;
   union block B;
   bool keepAlive = true;
   int menuOption, i;
   unsigned int input;
   char file_name[FNSZ] = {0};
+  char user_file[50] = "user_input.txt";
   char string[100];
 
   printf("\nMD5 Message Digest Implementation");
   printf("\n=================================\n");
 
   // Menu - User can perform MD5 message digest on a given string or file
-  printf("Enter 1 to pass in a file,\n"); 
+  printf("Enter 1 to pass in a file (files/name_of_file.extension),\n"); 
   printf("Enter 2 to pass in a string or\n");
   printf("Enter 3 to exit: ");  
 	scanf("%d", &menuOption);
@@ -318,6 +313,7 @@ int main(int argc, char **argv) {
     switch (menuOption) {
       // Adapted from: https://stackoverflow.com/a/34738555/8721358
       case 1:
+        // Prompt user for file name
         printf("Enter a file name: ");
         
         if (scanf ("%127s%*c", file_name) != 1) {
@@ -326,6 +322,7 @@ int main(int argc, char **argv) {
           return 1;
         }
         
+        // Hash file
         md5_init(&md5_ctx_val);
         file = md5_hash(&md5_ctx_val, &B, file_name);
 
@@ -348,35 +345,42 @@ int main(int argc, char **argv) {
         /**
          * Not perfect - string is first written to file and is then hashed
          * Could have been done better - md5_hash function was written to work with files specifically
-         */ 
-        // printf("Enter a string: ");
+         */
+
+        // Open file for writing
+        fptr = fopen(user_file, "w");
+        
+        if(fptr == NULL) {
+          printf("ERROR: File doesn't exist");   
+          exit(1);             
+        }
+
+        // Prompt user for input
+        printf("Enter a string: ");
+        scanf("%s", &string);
         // fgets(string, sizeof(string), stdin);
-        // fprintf(file, "%s", string);
 
-        // printf("Enter a file name where string is contained: ");
+        // Write input to file
+        fprintf(fptr, "%s", string);
+        fclose(fptr);
         
-        // if (scanf ("%127s%*c", file_name) != 1) {
-        //   fprintf (stderr, "ERROR: file_name entry failed.\n");
+        // Hash file
+        md5_init(&md5_ctx_val);
+        file = md5_hash(&md5_ctx_val, &B, user_file);
 
-        //   return 1;
-        // }
-        
-        // md5_init(&md5_ctx_val);
-        // file = md5_hash(file_name, &md5_ctx_val);
+        if (!file) {
+          fprintf (stderr, "ERROR: Failed to open file '%s'\n", user_file);
 
-        // if (!file) {
-        //   fprintf (stderr, "ERROR: Failed to open file '%s'\n", file_name);
+          return 1;
+        }
 
-        //   return 1;
-        // }
-
-        // for(i = 0; i < 4; i++) {
-        //   printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
-        //   printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
-        //   printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
-        //   printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
-        // }
-
+        // Display results of MD5 digest
+        for(i = 0; i < 4; i++) {
+          printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+          printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+          printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+          printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+        }
         break;
         case 3:
           // Terminate the program
@@ -388,7 +392,7 @@ int main(int argc, char **argv) {
           break;
     }
     
-    printf("\n\nEnter 1 to pass in a file,\n"); 
+    printf("\n\nEnter 1 to pass in a file (files/name_of_file.extension),\n"); 
     printf("Enter 2 to pass in a string or\n");
     printf("Enter 3 to exit: ");  
 	  scanf("%d", &menuOption);
