@@ -1,5 +1,7 @@
-// Kevin Niland
-// MD5 message digest algorithm implementation
+/**
+ * Kevin Niland
+ * MD5 message digest algorithm implementation
+ */ 
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -52,19 +54,20 @@ const uint32_t K[64] = {
 
 /**
  * Bitwise operators in C
- * & (bitwise AND)   
- * | (bitwise OR - v)
- * ^ (bitwise XOR)   
- * << (left shift) 
- * >> (right shift)  
- * ~ (bitwise NOT(X))
+ * 
+ * & - bitwise AND  
+ * | - bitwise OR 
+ * ~ - bitwise NOT(X)
+ * ^ - bitwise XOR
+ * << - Shift left 
+ * >> - Shift right  
  */ 
 
 /**
- * F(x, y, z) = XY v not(X) Z
- * G(x, y, z) = XZ v Y not(Z)
- * H(x, y, z) = X xor Y xor Z
- * I(x, y, z) = Y xor (X v not(Z))
+ * F(x, y, z) = ((x AND y) OR (NOT(x) and z))
+ * G(x, y, z) = ((x AND z) OR (y NOT(z))
+ * H(x, y, z) = (x XOR y XOR z)
+ * I(x, y, z) = (y XOR (x OR NOT(z))
  */
 #define F(x, y, z) ((x & y) | (~x & z))
 #define G(x, y, z) ((x & z) | (y & ~z))
@@ -103,7 +106,7 @@ const uint32_t K[64] = {
 const uint8_t ZEROBIT = 0x00;
 const uint8_t ONEBIT = 0x80;
 
-// MD5 initialization method - Begins an MD5 operation
+// MD5 initialization method - Starts an MD5 operation
 void md5_init(MD5_CTX *md5_ctx) {
   // Load magic initialization constants to set state values
   md5_ctx -> state[0] = 0x67452301;
@@ -277,7 +280,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
     md5_ctx -> state[2] += c;
     md5_ctx -> state[3] += d;
 
-    // Update final digest value
+    // Final update value
     for(int i = 0, j = 0; i < 4; i++, j += 4) {
       B -> threetwo[j] = (B -> eight[i] & 0xFF);
       B -> threetwo[j + 1] = ((B -> eight[i]) >> 8 & 0xFF);
@@ -289,16 +292,15 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
 // Main function
 int main(int argc, char **argv) {
-  FILE *file = NULL;
-  FILE *fptr;
+  FILE *file = NULL; // File pointer for files in the 'files' directory
+  FILE *userPtr; // File pointer for file created from user input
   MD5_CTX md5_ctx_val;
   union block B;
-  bool keepAlive = true;
+  bool keepAlive = true; // Keep while loop running until user manually exits
   int menuOption, i;
-  unsigned int input;
   char file_name[FNSZ] = {0};
-  char user_file[50] = "user_input.txt";
-  char string[100];
+  char user_file[50] = "user_input.txt"; // File that stores user input
+  char string[100]; // User input
 
   printf("\nMD5 Message Digest Implementation");
   printf("\n=================================\n");
@@ -311,9 +313,12 @@ int main(int argc, char **argv) {
 
   while (keepAlive = true) {
     switch (menuOption) {
-      // Adapted from: https://stackoverflow.com/a/34738555/8721358
       case 1:
-        // Prompt user for file name
+        /**
+         * Adapted from: https://stackoverflow.com/a/34738555/8721358
+         * 
+         * Prompt user for file name
+         */ 
         printf("Enter a file name: ");
         
         if (scanf ("%127s%*c", file_name) != 1) {
@@ -348,9 +353,9 @@ int main(int argc, char **argv) {
          */
 
         // Open file for writing
-        fptr = fopen(user_file, "w");
+        userPtr = fopen(user_file, "w");
         
-        if(fptr == NULL) {
+        if(userPtr == NULL) {
           printf("ERROR: File doesn't exist");   
           exit(1);             
         }
@@ -358,11 +363,10 @@ int main(int argc, char **argv) {
         // Prompt user for input
         printf("Enter a string: ");
         scanf("%s", &string);
-        // fgets(string, sizeof(string), stdin);
 
         // Write input to file
-        fprintf(fptr, "%s", string);
-        fclose(fptr);
+        fprintf(userPtr, "%s", string);
+        fclose(userPtr);
         
         // Hash file
         md5_init(&md5_ctx_val);
