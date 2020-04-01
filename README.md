@@ -5,8 +5,10 @@
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
  
   ### Developer
-* Kevin Niland
-* G00342279
+* Kevin Niland - G00342279
+
+## MD5 message-digest algorithm overview
+From the MD5 wikipedia [1], _"MD5 processes a variable-length message into a fixed-length output of 128 bits. The input message is broken up into chunks of 512-bit blocks (sixteen 32-bit words); the message is padded so that its length is divisible by 512. The padding works as follows: first a single bit, 1, is appended to the end of the message. This is followed by as many zeros as are required to bring the length of the message up to 64 bits fewer than a multiple of 512. The remaining bits are filled up with 64 bits representing the length of the original message, modulo 2^64."_
 
 ### How to run
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
@@ -19,7 +21,7 @@
    3. To exit the program, choose option 3.
 * Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
 
-## Project Overview and Developer Diary
+## Research, Project Overview, and Developer Diary
 * **Week 1:** 
 * **Week 2:** 
 * **Week 3:** 
@@ -33,11 +35,12 @@
 * **Week 11:** 
 
 ## References
-* [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321).
-* [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c).
-* [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14).
-* [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
-* [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/).
-* [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C).
+* [1] [MD5](https://en.wikipedia.org/wiki/MD5)
+* [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321).
+* [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c).
+* [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14).
+* [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
+* [6] [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/).
+* [7] [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C).
 <!-- * []() -->
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
