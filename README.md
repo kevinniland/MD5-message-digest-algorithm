@@ -11,7 +11,7 @@
 From the MD5 wikipedia [1], _"MD5 processes a variable-length message into a fixed-length output of 128 bits. The input message is broken up into chunks of 512-bit blocks (sixteen 32-bit words); the message is padded so that its length is divisible by 512. The padding works as follows: first a single bit, 1, is appended to the end of the message. This is followed by as many zeros as are required to bring the length of the message up to 64 bits fewer than a multiple of 512. The remaining bits are filled up with 64 bits representing the length of the original message, modulo 2^64."_
 
 ## MD5 Steps
-There are five steps involved in computing the message digest of the message, which this section will briefly discuss
+There are five steps involved in computing the message digest of the message, which this section will discuss.
 
 ### Step 1 - Append Padding Bits (Section 3.1 of RFC 1321 document) [2]
 The message is "padded" (extended) so that its length (in bits) is congruent to 448, modulo 512. Padding is always performed, even if the length of the message is already congruent to 448, modulo 512. Padding is performed as follows: a single "1" bit is appended to the message, and then "0" bits are appended so that the length in bits of the padded message becomes congruent to 448, modulo 512. In all, at least one bit and at most 512 bits are appended.
