@@ -26,13 +26,15 @@ that is an exact multiple of 16 (32-bit) words. Let M[0 ... N-1] denote the word
 A four-word buffer (A, B, C, D) is used to compute the message digest. Here each of A, B, C, D is a 32-bit register. These registers are
 initialized to the following values in hexadecimal, low-order bytes first):
 
-word A: 01 23 45 67
-word B: 89 ab cd ef
-word C: fe dc ba 98
-word D: 76 54 32 10
+* word A: 01 23 45 67
+* word B: 89 ab cd ef
+* word C: fe dc ba 98
+* word D: 76 54 32 10
 
 ### Step 4 - Process Message in 16-Word Blocks (Section 3.4 of RFC 1321 document) [2]
-Define four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word.
+Define four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word:
+
+![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
 
 ### Step 5 - Output (Section 3.5 of RFC 1321 document) [2]
 The message digest produced as output is A, B, C, D. That is, we begin with the low-order byte of A, and end with the high-order byte of
