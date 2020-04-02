@@ -22,17 +22,21 @@ From the MD5 wikipedia [1], _"MD5 processes a variable-length message into a fix
 * Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
 
 ## Research, Project Overview, and Developer Diary
-* **Week 1:** 
-* **Week 2:** 
-* **Week 3:** 
-* **Week 4:** 
-* **Week 5:** 
-* **Week 6:** 
+* **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
+* **Week 2:** In this week a video on the SHA Standard was made available to us, which gave us an overview of the SHA specification. In this video, our lecturer went through the Secure Hash Standard document [8] published by the National Institute of Standards and Technology. Further reading included researching and discerning the differences between the SHA and MD5 hash algorithms, from various resources [9], [10], [11]. Some differences include MD5 is faster than SHA, SHA is more secure than MD5, MD5 can have a bit length of 128 while SHA can have a bit length of 160. They also disccused how MD5 is considered broken in the sense that you can generate a collision and thus should not be used for any security applications. SHA is not known to be broken and is believed to be secure. I also researched how each generated a hash of a message.
+* **Week 3:** In this week a video on C bit operations was made available to us and coded up the file from this. I proceeded to research bitwise operators in C to get a better understanding of how each worked [12]. I then re-read the suggested documents on MD5 and SHA [1], [8] due to the fact that my understanding of each would be improved.
+* **Week 4:** In this week a video on the functions and constants in SHA was made available to us.
+* **Week 5:** In this week a video on padding a message in C was made available to us.
+* **Week 6:** In this week a video on unions in C was made available to us.
 * **Week 7:** 
 * **Week 8:** 
-* **Week 9:** 
-* **Week 10:** 
-* **Week 11:** 
+* **Week 9 - 11:** Week 9 - 11 was mainly comprised of finsihing off the project and writing up documentation.
+
+Week 4-5: In the fourth week, I looked at the video on functions and constants in SHA and followed along with the coding recommended in the video. I also read over the paragraph in the SHA documentation in section 4.1.2 on functions to help understand it. [3]. In the fifth week, I looked at the padding video on the SHA padding and how it works, as well as reading into the padding in SHA. I also did some research as to how the padding works in MD5 by reading the sections on padding in the RFC document about MD5 in section 3.1 and 3.2. [1].
+
+Week 5-7: In week 5, I watched the video on unions that was put up on Moodle and coded up the unions file. After watching this, I then went and looked up the comparisons of a union vs a struct as I was already familiar with these. [8]. The sixth week involved watching the merging of padding with the hashing, I then carried out this in my own code. In the seventh week, I watched both the hash function video and finalising the padding videos and again followed along in my own repository.
+
+Week 8: In week 8, I followed the video on testing and refactoring the code and carried this out in my project. I then looked back at the code I had previously written and looked at the comparisons to see the scale of changes that the refactoring of the code had done to the project.
 
 ## References
 * [1] [MD5](https://en.wikipedia.org/wiki/MD5)
@@ -42,5 +46,10 @@ From the MD5 wikipedia [1], _"MD5 processes a variable-length message into a fix
 * [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
 * [6] [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/).
 * [7] [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C).
+* [8] [Secure Hash Standard PDF](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+* [9] [Algorithm Complexity & Security: MD5 or SHA1](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1)
+* [10] [Difference between MD5 and SHA1](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/)
+* [11] [Is SHA1 better than MD5 only because it generates a hash of 160 bits?](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits)
+* [12] [Bitwise Operators in C](https://www.tutorialspoint.com/cprogramming/c_bitwise_operators.htm)
 <!-- * []() -->
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
