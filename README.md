@@ -6,7 +6,7 @@
  * [MD5 directory](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5) - Contains the main code for the project (md5.c), and pre-compiled executable (does not work on Google Cloud VM, must make a new one on the instance itself), and files that can be read in and hashed.
  * [Practice directory](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/practice) - Contains code for bit operations, file manipulation, and SHA256 code from the various videos our lecturer put up and went through.
  * README.md - Contains all documentation for the project.
- * [Screencast]() - Overview of code and Google Cloud VM demo
+ * [Screencast](https://www.youtube.com/watch?v=ghIuf0bnVhw&feature=youtu.be) - Overview of code and Google Cloud VM demo
  
  ### Project Statement
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
