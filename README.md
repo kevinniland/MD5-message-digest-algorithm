@@ -49,6 +49,8 @@ Define four auxiliary functions that each take as input three 32-bit words and p
 The message digest produced as output is A, B, C, D. That is, we begin with the low-order byte of A, and end with the high-order byte of
 D.
 
+![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
+
 ### How to run
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
