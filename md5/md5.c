@@ -123,7 +123,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   // Stores previous hash values
   uint32_t a, b, c, d;
 
-  // Keeps track of bits
+  // Keeps track of bits in file
   uint64_t counter = 0;
   size_t size;
   
@@ -151,12 +151,21 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   while (keepAlive) {
     size = fread(&B -> eight, 1, 64, fptr);
 
-    // If size is equal to 64, continue - no padding needed
+    /**
+     * Padding operations
+     * 
+     * 1. If size is equal to 64, continue - no padding needed
+     * 2. If size is greater than 56 and less than 64, not enough space for 64 bits at end of file
+     * 3. If size is less than 56 and greater than 0, pad file at the end
+     * 4. If size is equal to 0 and pad is equal to 0, end of file - file was a size of multiple 64
+     * 5. If size is equal to 0 and pad is equal to 1, end of file - padding started in previous block, pad file with all zeros
+     */ 
     if (size == 64) {
       counter += 512;
-    } else if (size > 56 && size < 64) { // If size is greater than 56 and less than 64, not enough space for 64 bits at end of file
+    } else if (size < 64 && size > 56) {
+      // Update counter to current size multiplied by 8
       counter += (size * 8);
-      pad = 1;
+      pad = 1; 
 
       // Pad out to end of block
       B -> eight_pad[size] = ONEBIT;
@@ -164,7 +173,8 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
       for (i = size + 1; i < 64; i++) {
         B -> eight_pad[i] = ZEROBIT;
       }
-    } else if(size > 0 && size < 56) { 
+    } else if (size < 56 && size > 0) { 
+      // Update counter to current size multiplied by 8 
       counter += (size * 8);
 
       B -> eight_pad[size] = ONEBIT;
@@ -175,6 +185,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
       B -> sixfour[7] = counter;
 
+      // Exit while loop
       keepAlive = false;
     } else if (size == 0 && pad == 0) {
       B -> eight_pad[0] = ONEBIT;
@@ -185,6 +196,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
       B -> sixfour[7] = counter;
 
+      // Exit while loop
       keepAlive = false;
     } else if (size == 0 && pad == 1) {
       B -> eight_pad[0]=ZEROBIT;
@@ -195,6 +207,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
       B -> sixfour[7] = counter;
 
+      // Exit while loop
       keepAlive = false;
     }
     
@@ -306,7 +319,7 @@ int main(int argc, char **argv) {
   printf("\n=================================\n");
 
   // Menu - User can perform MD5 message digest on a given string or file
-  printf("Enter 1 to pass in a file (files/name_of_file.extension),\n"); 
+  printf("Enter 1 to pass in a file (files/name_of_file.extension), \n"); 
   printf("Enter 2 to pass in a string or\n");
   printf("Enter 3 to exit: ");  
 	scanf("%d", &menuOption);
@@ -331,6 +344,7 @@ int main(int argc, char **argv) {
         md5_init(&md5_ctx_val);
         file = md5_hash(&md5_ctx_val, &B, file_name);
 
+        // Notifies user of error if unable to open file
         if (!file) {
           fprintf (stderr, "ERROR: Failed to open file '%s'\n", file_name);
 
@@ -396,6 +410,7 @@ int main(int argc, char **argv) {
           break;
     }
     
+    // Prompt user for another option
     printf("\n\nEnter 1 to pass in a file (files/name_of_file.extension),\n"); 
     printf("Enter 2 to pass in a string or\n");
     printf("Enter 3 to exit: ");  
