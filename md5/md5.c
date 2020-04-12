@@ -368,39 +368,29 @@ int main(int argc, char **argv) {
   char string[100]; // User input
 
   if (argc == 2 && strcmp(argv[1], "--help") == 0) {
-    printf("Help command");
+    printf("\nUsage: ./md5 [options]");
+    printf("\n\nwhere options include:");
+    printf("\n--test     Run tests to check if code is correct");
+    printf("\n--version  Display the current version of the program");
 
-    printf("\nContinue? (Y/n): ");
-    scanf("%c", &initOption);
-
-    if (initOption == 'N' || initOption == 'n') {
-      printf("Exiting...");
-      
-      exit(1);
-    }
+    exit(1);
   }
 
   if (argc == 2 && strcmp(argv[1], "--test") == 0) {
     printf("Test command");
 
-    printf("\nContinue? (Y/n): ");
-    scanf("%c", &initOption);
-
-    if (initOption == 'N' || initOption == 'n') {
-      printf("Exiting...");
-
-      exit(1);
-    }
+    exit(1);
   }
 
-  // printf("\n\nWould you like to continue to run the program? (Y/n): ");
-  // scanf("%c", &initOption);
+  if (argc == 2 && strcmp(argv[1], "--version") == 0) {
+    printf("md5.c - 1.0\n");
 
-  // if (initOption == 'N' || initOption == 'n') {
-  //   printf("Exiting...");
-    
-  //   exit(1);
-  // }
+    #ifdef __GNUC__
+      printf ("gcc.exe - %d.%d\n", __GNUC__, __GNUC_MINOR__);
+    #endif
+
+    exit(1);
+  }
 
   printf("\nMD5 Message Digest Implementation");
   printf("\n=================================\n");
