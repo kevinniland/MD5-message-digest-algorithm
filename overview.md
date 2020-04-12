@@ -1,6 +1,8 @@
-# Calculation of the MD5 hash digest of an input
+# MD5 Message Digest Algorithm
  _4th year Theory of Algorithms project. An application written in C that takes in a user input/file and calculates the MD5 hash digest of the user input/file._
 
+ * Length: _ pages
+ 
  ### Repository and README.md Overview
  This repository and accompanying README.md contain the following:
  * [MD5 directory](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5) - Contains the main code for the project (md5.c), and pre-compiled executable (does not work on Google Cloud VM, must make a new one on the instance itself), and files that can be read in and hashed.
