@@ -1,20 +1,65 @@
 # MD5 Message Digest Algorithm
  _4th year Theory of Algorithms project. An application written in C that takes in a user input/file and calculates the MD5 hash digest of the user input/file._
 
- * Length: _ pages
- 
- ### Repository and README.md Overview
- This repository and accompanying README.md contain the following:
- * [MD5 directory](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5) - Contains the main code for the project (md5.c), and pre-compiled executable (does not work on Google Cloud VM, must make a new one on the instance itself), and files that can be read in and hashed.
- * [Practice directory](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/practice) - Contains code for bit operations, file manipulation, and SHA256 code from the various videos our lecturer put up and went through.
- * README.md - Contains all documentation for the project.
- * [Screencast](https://www.youtube.com/watch?v=ghIuf0bnVhw&feature=youtu.be) - Overview of code and Google Cloud VM demo
+ * Length: 6 pages (based on ...)
  
  ### Project Statement
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
  
  ### Developer
 * Kevin Niland - G00342279
+
+ ## Introduction
+ This section provides an introduction to the repository and code.
+ 
+ ### Repository
+ This repository contains the following directories:
+ * [images](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/images) - Contains images used to help aid in the explanation of certain parts of the MD5 algorithm and the accompanying code.
+ * [md5](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5) - The main directory of the repository. Contains: 
+   * [files](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5/files) directory, which contains files with varying different letters and strings (most taken from the RFC 1321 document's test suites)
+   * [md5.c](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/md5.c), the C file containing all the code used to implement the MD5 message digest algorithm
+   * [md5.exe](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/md5.exe), a pre-compiled version of md5.c (can only be run on a Windows system - the md5.c file must be compiled using '[make](https://www.tutorialspoint.com/unix_commands/make.htm)', which is typically used to build executable programs and libraries from source code (mainly on Unix systems)
+   * [user_input.txt](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/user_input.txt), which is used to store a user's input.
+
+## Running the program
+This section details how to download, compile, and run the code contained in this repository for both Windows and Unix based systems.
+
+### Windows
+#### Compiler
+To compile a C program on a Windows platform, please follow the below installation instructions. If you already have GCC installed on Windows, skip to the next section 'Running the program'.
+
+##### GCC installation instructions
+This section provides a quick overview of setting up a compiler for C programs on Windows. For a more robust walkthrough, please visit [How to Install the Latest GCC on Windows](https://preshing.com/20141108/how-to-install-the-latest-gcc-on-windows/).
+* **Install Cygwin**
+Download the [Cygwin installer](https://cygwin.com/install.html). Run either the 32 bit or 64 bit version depending on your version of Windows. Cygwin’s setup wizard will walk you through a series of steps. When you reach the “Select Packages” step, don’t bother selecting any packages yet. Just go ahead and click Next. We’ll add additional packages from the command line later. Move the Cygwin installer to a folder of your choice (it'll be needed later to install packages).
+* **Install Required Cygwin Packages**
+Next, you’ll need to add several packages to Cygwin. Open a command prompt, navigate to the folder where the Cygwin installer is located, and run the following command:
+   
+   `C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
+   
+   A window will pop up and download all the required packages along with their dependencies.
+   
+* **Download, Build and Install the Latest GCC**
+Open a Cygwin terminal, either from the Start menu or by running Cygwin.bat from the Cygwin installation folder. To download and extract the latest GCC source code, enter the following commands in the Cygwin terminal:
+
+`wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
+`tar xf gcc-4.9.2.tar.gz`
+
+You should now be able to compile C programs using GCC. If you have any issues, please refer to the above guide for installing GCC on Windows.
+
+##### Running the program
+* Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
+* Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
+* A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`.
+* Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
+   1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
+   2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
+   then be written to file, at which point it will be automatically hashed and the result will be printed out.
+   3. To exit the program, choose option 3.
+* Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
+
+### Unix 
 
 ## MD5 message-digest algorithm overview
 From the MD5 wikipedia [1], _"MD5 processes a variable-length message into a fixed-length output of 128 bits. The input message is broken up into chunks of 512-bit blocks (sixteen 32-bit words); the message is padded so that its length is divisible by 512. The padding works as follows: first a single bit, 1, is appended to the end of the message. This is followed by as many zeros as are required to bring the length of the message up to 64 bits fewer than a multiple of 512. The remaining bits are filled up with 64 bits representing the length of the original message, modulo 2^64."_
@@ -52,18 +97,6 @@ The message digest produced as output is A, B, C, D. That is, we begin with the 
 D.
 
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
-
-### How to run
-* Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
-* Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
-* A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
-* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`.
-* Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
-   1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
-   2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
-   then be written to file, at which point it will be automatically hashed and the result will be printed out.
-   3. To exit the program, choose option 3.
-* Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
