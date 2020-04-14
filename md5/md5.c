@@ -177,6 +177,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
       // Update counter to current size multiplied by 8 
       counter += (size * 8);
 
+      // Pad out to end of block
       B -> eight_pad[size] = ONEBIT;
 
       for (i = size + 1; i < 56; i++) {
@@ -307,14 +308,15 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 int main(int argc, char **argv) {
   FILE *file = NULL; // File pointer for files in the 'files' directory
   FILE *userPtr; // File pointer for file created from user input
-  MD5_CTX md5_ctx_val;
-  union block B;
+  MD5_CTX md5_ctx_val; // Context
+  union block B; // Union block
   bool keepAlive = true; // Keep while loop running until user manually exits
   int menuOption, i;
   char initOption, file_name[FNSZ] = {0};
   char user_file[50] = "user_input.txt"; // File that stores user input
   char string[100]; // User input
 
+  // Command line arguments
   if (argc == 2 && strcmp(argv[1], "--help") == 0) {
     printf("\nUsage: ./md5 (Displays menu system - program will keep running, user can keep hashing a file/input)");
     printf("\n   or  ./md5 [options]");
@@ -327,12 +329,14 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  // Test cases
   if (argc == 2 && strcmp(argv[1], "--test") == 0) {
     printf("Test command");
 
     exit(1);
   }
 
+  // Version
   if (argc == 2 && strcmp(argv[1], "--version") == 0) {
     printf("md5.c - 1.0\n");
 
