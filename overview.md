@@ -28,10 +28,11 @@ This section details how to download, compile, and run the code contained in thi
 
 ### Windows
 #### Compiler
-To compile a C program on a Windows platform, please follow the below installation instructions. If you already have GCC installed on Windows, skip to the next section 'Running the program'.
+To compile a C program on a Windows platform, please follow the below installation instructions. If you already have GCC installed on Windows, skip to the next section 'How to run'.
 
 ##### GCC installation instructions
 This section provides a quick overview of setting up a compiler for C programs on Windows. For a more robust walkthrough, please visit [How to Install the Latest GCC on Windows](https://preshing.com/20141108/how-to-install-the-latest-gcc-on-windows/).
+
 * **Install Cygwin** Download the [Cygwin installer](https://cygwin.com/install.html). Run either the 32 bit or 64 bit version depending on your version of Windows. Cygwin’s setup wizard will walk you through a series of steps. When you reach the “Select Packages” step, don’t bother selecting any packages yet. Just go ahead and click Next. We’ll add additional packages from the command line later. Move the Cygwin installer to a folder of your choice (it'll be needed later to install packages).
 * **Install Required Cygwin Packages** Next, you’ll need to add several packages to Cygwin. Open a command prompt, navigate to the folder where the Cygwin installer is located, and run the following command:
    
@@ -46,12 +47,14 @@ A window will pop up and download all the required packages along with their dep
 
 You should now be able to compile C programs using GCC. If you have any issues, please refer to the above guide for installing GCC on Windows.
 
-##### Running the program
+##### How to run
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
 * A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
 * Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
-   * `.\md5 --help`
+   * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
+   * `.\md5 --test` - This will run test cases....
+   * `.\md5 --version` - This will display the current version of program.
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
@@ -59,24 +62,67 @@ You should now be able to compile C programs using GCC. If you have any issues, 
    3. To exit the program, choose option 3.
 * Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
 
-### Unix 
+### Linux-based Operating System (Redhat, SUSE Linux, Ubuntu, etc.)
+#### Compiler (GCC and make)
+Most Linux-based Operating Systems include a compiler as a default application. Commonly, it's GCC. If GCC isn't installed, please follow the instructions in the next section, otherwise skip ahead. You can also compile the program using `make`.
 
-## MD5 message-digest algorithm overview
+#### Using GCC
+This section provides a quick overview of setting up a compiler for C programs on a Linux-based Operating System. These instructions should work for most Linux-based Operating Systems. For a more robust walkthrough, please visit [How to Install GCC Compiler](https://linuxize.com/post/how-to-install-gcc-compiler-on-ubuntu-18-04/):
+
+* **Prerequisites**
+To able to add new repositories and install packages on your system, you must be logged in as root or user with sudo privileges.
+
+* **Installing GCC** Start by updating the packages list using `sudo apt update`. Then, install the build-essential package by typing `sudo apt install build-essential`. You may also want to install the manual pages about using GNU/Linux for development with `sudo apt-get install manpages-dev`. GCC should now be installed on you system
+
+#### Using make
+The purpose of the make utility is to determine automatically which pieces of a large program need to be recompiled, and issue the commands to recompile them. We will first need to create a makefile. The makefile is read by the make command, which determines the target file or files that are to be made and then compares the dates and times of the source files to decide which rules need to be invoked to construct the target. For this program, using GCC is enough. However, if you wish to play around with it yourself, and make different header files for different components of the program, then using `make` will be the better option. 
+
+When you download/clone this project to your local machine, navigate to the `md5` directory and create a file called `MakeFile`. Inside this file, copy the following code:
+
+```
+all: # Target
+   gcc -o md5 .\md5.c
+```
+
+Now you're all set up to use either GCC or `make` to compile and run the program.
+
+##### How to run
+* Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
+* Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
+* To compile using GCC, run the command `gcc -o md5 .\md5.c` inside this directory. 
+* To compile using `make`, run the command `make`.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
+   * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
+   * `.\md5 --test` - This will run test cases....
+   * `.\md5 --version` - This will display the current version of program.
+* Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
+   1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
+   2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
+   then be written to file, at which point it will be automatically hashed and the result will be printed out.
+   3. To exit the program, choose option 3.
+* Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
+
+---
+
+## Algorithm
+This section gives an overview and explaination of MD5 and how this particular verion of it was implemented.
+
+### MD5 overview
 From the MD5 wikipedia [1], _"MD5 processes a variable-length message into a fixed-length output of 128 bits. The input message is broken up into chunks of 512-bit blocks (sixteen 32-bit words); the message is padded so that its length is divisible by 512. The padding works as follows: first a single bit, 1, is appended to the end of the message. This is followed by as many zeros as are required to bring the length of the message up to 64 bits fewer than a multiple of 512. The remaining bits are filled up with 64 bits representing the length of the original message, modulo 2^64."_
 
-## MD5 Steps
+### MD5 Steps
 There are five steps involved in computing the message digest of the message, which this section will discuss.
 
-### Step 1 - Append Padding Bits (Section 3.1 of RFC 1321 document) [2]
+#### Step 1 - Append Padding Bits (Section 3.1 of RFC 1321 document) [2]
 The message is "padded" (extended) so that its length (in bits) is congruent to 448, modulo 512. Padding is always performed, even if the length of the message is already congruent to 448, modulo 512. Padding is performed as follows: a single "1" bit is appended to the message, and then "0" bits are appended so that the length in bits of the padded message becomes congruent to 448, modulo 512. In all, at least one bit and at most 512 bits are appended.
 
-### Step 2 - Append Length (Section 3.2 of RFC 1321 document) [2]
+#### Step 2 - Append Length (Section 3.2 of RFC 1321 document) [2]
 A 64-bit representation of b (the length of the message before the padding bits were added) is appended to the result of the previous 
 step. In the unlikely event that b is greater than 2^64, then only the low-order 64 bits of b are used. At this point the resulting 
 message (after padding with bits and with b) has a length that is an exact multiple of 512 bits. Equivalently, this message has a length 
 that is an exact multiple of 16 (32-bit) words. Let M[0 ... N-1] denote the words of the resulting message, where N is a multiple of 16.
 
-### Step 3 - Initialize MD Buffer (Section 3.3 of RFC 1321 document) [2]
+#### Step 3 - Initialize MD Buffer (Section 3.3 of RFC 1321 document) [2]
 A four-word buffer (A, B, C, D) is used to compute the message digest. Here each of A, B, C, D is a 32-bit register. These registers are
 initialized to the following values in hexadecimal, low-order bytes first):
 
@@ -87,16 +133,22 @@ initialized to the following values in hexadecimal, low-order bytes first):
 | word C: |  fe dc ba 98 | 
 | word D: |  76 54 32 10 |
 
-### Step 4 - Process Message in 16-Word Blocks (Section 3.4 of RFC 1321 document) [2]
+#### Step 4 - Process Message in 16-Word Blocks (Section 3.4 of RFC 1321 document) [2]
 Define four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word:
 
 ![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
 
-### Step 5 - Output (Section 3.5 of RFC 1321 document) [2]
+#### Step 5 - Output (Section 3.5 of RFC 1321 document) [2]
 The message digest produced as output is A, B, C, D. That is, we begin with the low-order byte of A, and end with the high-order byte of
 D.
 
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
+
+### Implementation
+
+
+## Complexity
+
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
