@@ -303,58 +303,6 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   }
 }
 
-void string_to_file() {
-  int i;
-  char user_file[50] = "user_input.txt"; // File that stores user input
-  char string[100]; // User input
-  MD5_CTX md5_ctx_val;
-  FILE *file = NULL; // File pointer for files in the 'files' directory
-  FILE *userPtr; // File pointer for file created from user input
-  union block B;
-
-  /**
-   * Not perfect - string is first written to file and is then hashed
-   * Could have been done better - md5_hash function was written to work with files specifically
-   */
-  
-  // Open file for writing
-  userPtr = fopen(user_file, "w");
-        
-  if(userPtr == NULL) {
-    printf("ERROR: File doesn't exist");   
-    exit(1);             
-  }
-
-  // Prompt user for input
-  printf("Enter a word/sentence: ");
-  scanf("%[^\n]s", &string);
-  // fgets(string, sizeof(string), stdin);
-
-  // Write input to file
-  fprintf(userPtr, "%s", string);
-  fclose(userPtr);
-        
-  // Hash file
-  md5_init(&md5_ctx_val);
-  file = md5_hash(&md5_ctx_val, &B, user_file);
-
-  if (!file) {
-    fprintf (stderr, "ERROR: Failed to open file '%s'\n", user_file);
-
-    // return 1;
-  }
-
-  // Display results of MD5 digest
-  for(i = 0; i < 4; i++) {
-    printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
-    printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
-    printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
-    printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
-  }
-
-  // return 0; 
-}
-
 // Main function
 int main(int argc, char **argv) {
   FILE *file = NULL; // File pointer for files in the 'files' directory
@@ -368,10 +316,13 @@ int main(int argc, char **argv) {
   char string[100]; // User input
 
   if (argc == 2 && strcmp(argv[1], "--help") == 0) {
-    printf("\nUsage: ./md5 [options]");
+    printf("\nUsage: ./md5 (Displays menu system - program will keep running, user can keep hashing a file/input)");
+    printf("\n   or  ./md5 [options]");
     printf("\n\nwhere options include:");
     printf("\n--test     Run tests to check if code is correct");
     printf("\n--version  Display the current version of the program");
+    printf("\n--file     Allows you to specify a file to hash from the command line");
+    printf("\n--string   Allows you to specify a string/sentence to hash from the command line");
 
     exit(1);
   }
@@ -453,7 +404,7 @@ int main(int argc, char **argv) {
 
         // Prompt user for input
         printf("Enter a word/sentence: ");
-        scanf("%s ", &string);
+        scanf("%s", &string);
         // fgets(string, sizeof(string), stdin);
         // getchar();
 
