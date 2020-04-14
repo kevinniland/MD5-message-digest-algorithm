@@ -347,6 +347,7 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  // Menu
   printf("\nMD5 Message Digest Implementation");
   printf("\n=================================\n");
 
