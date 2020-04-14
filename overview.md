@@ -145,31 +145,45 @@ D.
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
 
 ### Implementation
+This section will give a quick explanation of the most significant parts of the program.
 ![block_context](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/block_context.PNG)
-![proto](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/proto.PNG)
+blah...
+
 ![constants](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/constants.PNG)
+The array K contains the pre-defined hash values used for transform rounds 1 (FF), 2 (GG), 3 (HH), and 4 (II)...
+
 ![rotleft](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/rotleft.PNG)
+ROTLEFT pushes bits off to the left 'c' places, however they are pushed in on the right again (loop around)...
+
 ![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
+
+
 ![functions2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions2.PNG)
-![ff](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ff.PNG)
-![gg](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/gg.PNG)
-![hh](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/hh.PNG)
-![ii](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ii.PNG)
+
 ![man_pad](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/man_pad.PNG)
+
 ![md5_init](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_init.PNG)
+
 ![md5_hash1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash1.PNG)
 ![md5_hash2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash2.PNG)
 ![md5_hash3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash3.PNG)
 ![md5_hash4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash4.PNG)
+
+![ff](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ff.PNG)
+![gg](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/gg.PNG)
+![hh](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/hh.PNG)
+![ii](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ii.PNG)
+
+![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
+
 ![main1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main1.PNG)
 ![main2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main2.PNG)
 ![main3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main3.PNG)
 ![main4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main4.PNG)
 ![main5](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main5.PNG)
-![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
 
 ## Complexity
-
+This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
