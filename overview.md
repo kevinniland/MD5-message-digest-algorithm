@@ -136,7 +136,7 @@ initialized to the following values in hexadecimal, low-order bytes first):
 #### Step 4 - Process Message in 16-Word Blocks (Section 3.4 of RFC 1321 document) [2]
 Define four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word:
 
-![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
+![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions_wiki.PNG)
 
 #### Step 5 - Output (Section 3.5 of RFC 1321 document) [2]
 The message digest produced as output is A, B, C, D. That is, we begin with the low-order byte of A, and end with the high-order byte of
