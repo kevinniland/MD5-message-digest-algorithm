@@ -7,7 +7,7 @@
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
  
  ### Developer
-* Kevin Niland - G00342279
+* Kevin Niland
 
  ## Introduction
  This section provides an introduction to the repository and code.
@@ -147,22 +147,25 @@ D.
 ### Implementation
 This section will give a quick explanation of the most significant parts of the program.
 ![block_context](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/block_context.PNG)
+<br/>
 blah...
 
 ![constants](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/constants.PNG)
+<br/>
 The array K contains the pre-defined hash values used for transform rounds 1 (FF), 2 (GG), 3 (HH), and 4 (II)...
 
 ![rotleft](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/rotleft.PNG)
+<br/>
 ROTLEFT pushes bits off to the left 'c' places, however they are pushed in on the right again (loop around)...
 
 ![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
-
+<br/>
 
 ![functions2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions2.PNG)
-
-![man_pad](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/man_pad.PNG)
+<br/>
 
 ![md5_init](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_init.PNG)
+<br/>
 
 ![md5_hash1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash1.PNG)
 ![md5_hash2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash2.PNG)
@@ -175,6 +178,8 @@ ROTLEFT pushes bits off to the left 'c' places, however they are pushed in on th
 ![ii](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ii.PNG)
 
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
+<br/>
+After the four transform rounds, we update the states after and then perform a final update on the value.
 
 ![main1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main1.PNG)
 ![main2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main2.PNG)
