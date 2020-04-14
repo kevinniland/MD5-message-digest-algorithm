@@ -21,6 +21,8 @@
    * [md5.exe](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/md5.exe), a pre-compiled version of md5.c (can only be run on a Windows system - the md5.c file must be compiled using '[make](https://www.tutorialspoint.com/unix_commands/make.htm)', which is typically used to build executable programs and libraries from source code (mainly on Unix systems)
    * [user_input.txt](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/user_input.txt), which is used to store a user's input.
 
+---
+
 ## Running the program
 This section details how to download, compile, and run the code contained in this repository for both Windows and Unix based systems.
 
@@ -30,17 +32,14 @@ To compile a C program on a Windows platform, please follow the below installati
 
 ##### GCC installation instructions
 This section provides a quick overview of setting up a compiler for C programs on Windows. For a more robust walkthrough, please visit [How to Install the Latest GCC on Windows](https://preshing.com/20141108/how-to-install-the-latest-gcc-on-windows/).
-* **Install Cygwin**
-Download the [Cygwin installer](https://cygwin.com/install.html). Run either the 32 bit or 64 bit version depending on your version of Windows. Cygwin’s setup wizard will walk you through a series of steps. When you reach the “Select Packages” step, don’t bother selecting any packages yet. Just go ahead and click Next. We’ll add additional packages from the command line later. Move the Cygwin installer to a folder of your choice (it'll be needed later to install packages).
-* **Install Required Cygwin Packages**
-Next, you’ll need to add several packages to Cygwin. Open a command prompt, navigate to the folder where the Cygwin installer is located, and run the following command:
+* **Install Cygwin** Download the [Cygwin installer](https://cygwin.com/install.html). Run either the 32 bit or 64 bit version depending on your version of Windows. Cygwin’s setup wizard will walk you through a series of steps. When you reach the “Select Packages” step, don’t bother selecting any packages yet. Just go ahead and click Next. We’ll add additional packages from the command line later. Move the Cygwin installer to a folder of your choice (it'll be needed later to install packages).
+* **Install Required Cygwin Packages** Next, you’ll need to add several packages to Cygwin. Open a command prompt, navigate to the folder where the Cygwin installer is located, and run the following command:
    
-   `C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
+`C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
    
-   A window will pop up and download all the required packages along with their dependencies.
+A window will pop up and download all the required packages along with their dependencies.
    
-* **Download, Build and Install the Latest GCC**
-Open a Cygwin terminal, either from the Start menu or by running Cygwin.bat from the Cygwin installation folder. To download and extract the latest GCC source code, enter the following commands in the Cygwin terminal:
+* **Download, Build and Install the Latest GCC** Open a Cygwin terminal, either from the Start menu or by running Cygwin.bat from the Cygwin installation folder. To download and extract the latest GCC source code, enter the following commands in the Cygwin terminal:
 
 `wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
 `tar xf gcc-4.9.2.tar.gz`
@@ -51,7 +50,8 @@ You should now be able to compile C programs using GCC. If you have any issues, 
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
 * A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
-* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
+   * `.\md5 --help`
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
