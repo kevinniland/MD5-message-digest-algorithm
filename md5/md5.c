@@ -2,6 +2,7 @@
  * Kevin Niland
  * MD5 message digest algorithm implementation
  */ 
+#include <assert.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -105,6 +106,7 @@ const uint32_t K[64] = {
 // Bits for manual padding
 const uint8_t ZEROBIT = 0x00;
 const uint8_t ONEBIT = 0x80;
+const int FIVETWELVE_BITS = 512;
 
 // MD5 initialization method - Starts an MD5 operation
 void md5_init(MD5_CTX *md5_ctx) {
@@ -127,8 +129,8 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   uint64_t counter = 0;
   size_t size;
   
-  bool keepAlive = true;
-  int i, pad = 0;
+  bool keepAlive = true, paddingRequired = false;
+  int i;
   
   // Assign initial values to temp variables in memory
   a = md5_ctx -> state[0];
@@ -161,11 +163,10 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
      * 5. If size is equal to 0 and pad is equal to 1, end of file - padding started in previous block, pad file with all zeros
      */ 
     if (size == 64) {
-      counter += 512;
+      counter += FIVETWELVE_BITS;
     } else if (size < 64 && size > 56) {
       // Update counter to current size multiplied by 8
       counter += (size * 8);
-      pad = 1; 
 
       // Pad out to end of block
       B -> eight_pad[size] = ONEBIT;
@@ -173,6 +174,8 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
       for (i = size + 1; i < 64; i++) {
         B -> eight_pad[i] = ZEROBIT;
       }
+
+      paddingRequired = true;
     } else if (size < 56 && size > 0) { 
       // Update counter to current size multiplied by 8 
       counter += (size * 8);
@@ -188,7 +191,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
       // Exit while loop
       keepAlive = false;
-    } else if (size == 0 && pad == 0) {
+    } else if (size == 0 && paddingRequired == true) {
       B -> eight_pad[0] = ONEBIT;
 
       for(i = 1; i < 56; i++) {
@@ -199,7 +202,7 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
       // Exit while loop
       keepAlive = false;
-    } else if (size == 0 && pad == 1) {
+    } else if (size == 0) {
       B -> eight_pad[0]=ZEROBIT;
 
       for(i = 1; i < 56; i++) {
@@ -304,6 +307,10 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   }
 }
 
+void testing() {
+  printf("Hello");
+}
+
 // Main function
 int main(int argc, char **argv) {
   FILE *file = NULL; // File pointer for files in the 'files' directory
@@ -315,7 +322,7 @@ int main(int argc, char **argv) {
   char initOption, file_name[FNSZ] = {0};
   char user_file[50] = "user_input.txt"; // File that stores user input
   char string[100]; // User input
-
+    
   // Command line arguments
   if (argc == 2 && strcmp(argv[1], "--help") == 0) {
     printf("\nUsage: ./md5 (Displays menu system - program will keep running, user can keep hashing a file/input)");
@@ -330,8 +337,38 @@ int main(int argc, char **argv) {
   }
 
   // Test cases
-  if (argc == 2 && strcmp(argv[1], "--test") == 0) {
-    printf("Test command");
+  // if (argc == 2 && strcmp(argv[1], "--test") && strcmp(argv[2], "files/a.txt") == 0) {
+  //   testing();
+
+  //   for(int counter = 1; counter < argc; counter++) 
+  //     printf("\nargv[%d]: %s",counter,argv[counter]); 
+
+  //   // md5_init(&md5_ctx_val);
+  //   // file = md5_hash(&md5_ctx_val, &B, file_name);
+
+  //   // // Notifies user of error if unable to open file
+  //   // if (!file) {
+  //   //   fprintf (stderr, "ERROR: Failed to open file '%s'\n", file_name);
+
+  //   //   return 1;
+  //   // }
+
+  //   // if ()
+  //   exit(1);
+  // } else {
+  //   printf("\nERROR: Please provide a file to test for hash value\n");
+
+  //   exit(1);
+  // }
+
+  if(argc >= 2) { 
+    for(int counter = 1; counter < argc; counter++) {
+      // printf("\nargv[%d]: %s", counter, argv[counter]);
+    }
+
+    if (strcmp(argv[1], "--test") == 0) {
+      printf("Test");
+    }
 
     exit(1);
   }
@@ -435,7 +472,6 @@ int main(int argc, char **argv) {
           printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
         }
 
-        // string_to_file();
         break;
         case 3:
           // Terminate the program
