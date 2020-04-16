@@ -146,9 +146,10 @@ D.
 
 ### Implementation
 This section will give a quick explanation of the most significant parts of the program.
+<br/>
 ![block_context](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/block_context.PNG)
 <br/>
-blah...
+Union block for ...
 
 ![constants](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/constants.PNG)
 <br/>
@@ -160,32 +161,39 @@ ROTLEFT pushes bits off to the left 'c' places, however they are pushed in on th
 
 ![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
 <br/>
+Four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word. In each bit position F acts as a conditional: if X then Y else Z. The functions G, H, and I are similar to the function F, in that they act in "bitwise parallel" to produce their output from the bits of X, Y, and Z, in such a manner that if the corresponding bits of X, Y, and Z are independent and unbiased, then each bit of G(X,Y,Z), H(X,Y,Z), and I(X,Y,Z) will be independent and unbiased. 
 
 ![functions2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions2.PNG)
 <br/>
+FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4. Rotation is separate from addition to prevent recomputation.
 
 ![md5_init](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_init.PNG)
 <br/>
+md5_init starts the MD5 operation. It loads magic initialization constants to set state values. 
 
 ![md5_hash1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash1.PNG)
-![md5_hash2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash2.PNG)
+<br/>
+Start of md5_hash. Variables for storing previous hash values, keeping track of the number of bits in file, and for assigning initial values to temp variables in memory.
+
+CHANGE
 ![md5_hash3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash3.PNG)
 ![md5_hash4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash4.PNG)
-
-![ff](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ff.PNG)
-![gg](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/gg.PNG)
-![hh](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/hh.PNG)
-![ii](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ii.PNG)
 
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
 
 ![main1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main1.PNG)
-![main2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main2.PNG)
+<br/>
+List of commands user can run instead of directly going into the menu of the program. `.\md5.exe --help` will display all these commands. `--test` runs test cases, `--version` displays current version of the program, `--file` will allow the user to enter the name of a file on the command line, `--string` will allow the user to enter a string on the command line.
+
 ![main3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main3.PNG)
+<br/>
+Option 1 allows the user to read in a file to hash. Files have been included with this repo. To hash a file after choosing option 1, enter files/name_of_file.extension. For example, to hash `a.txt`, enter `files/a.txt` after choosing option 1.
+
 ![main4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main4.PNG)
-![main5](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main5.PNG)
+<br/>
+Similar operation above. User first enters a string which is then written to file. This file is then hashed.
 
 ## Complexity
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
