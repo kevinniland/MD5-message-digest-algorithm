@@ -7,7 +7,7 @@
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
  
  ### Developer
-* Kevin Niland - G00342279
+* Kevin Niland
 
  ## Introduction
  This section provides an introduction to the repository and code.
@@ -145,20 +145,58 @@ D.
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
 
 ### Implementation
+This section will give a quick explanation of the most significant parts of the program.
+<br/>
 ![block_context](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/block_context.PNG)
-![ff](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ff.PNG)
-![gg](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/gg.PNG)
-![hh](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/hh.PNG)
-![ii](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/ii.PNG)
+<br/>
+Union block for ...
+
+![constants](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/constants.PNG)
+<br/>
+The array K contains the pre-defined hash values used for transform rounds 1 (FF), 2 (GG), 3 (HH), and 4 (II)...
+
+![rotleft](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/rotleft.PNG)
+<br/>
+ROTLEFT pushes bits off to the left 'c' places, however they are pushed in on the right again (loop around)...
+
 ![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions.PNG)
+<br/>
+Four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word. In each bit position F acts as a conditional: if X then Y else Z. The functions G, H, and I are similar to the function F, in that they act in "bitwise parallel" to produce their output from the bits of X, Y, and Z, in such a manner that if the corresponding bits of X, Y, and Z are independent and unbiased, then each bit of G(X,Y,Z), H(X,Y,Z), and I(X,Y,Z) will be independent and unbiased. 
+
 ![functions2](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions2.PNG)
-![man_pad](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/man_pad.PNG)
+<br/>
+FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4. Rotation is separate from addition to prevent recomputation.
+
 ![md5_init](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_init.PNG)
-![proto](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/proto.PNG)
+<br/>
+md5_init starts the MD5 operation. It loads magic initialization constants to set state values. 
+
+![md5_hash1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash1.PNG)
+<br/>
+Start of md5_hash. Variables for storing previous hash values, keeping track of the number of bits in file, and for assigning initial values to temp variables in memory.
+
+CHANGE
+![md5_hash3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash3.PNG)
+![md5_hash4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash4.PNG)
+
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
+<br/>
+After the four transform rounds, we update the states after and then perform a final update on the value.
+
+![main1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main1.PNG)
+<br/>
+List of commands user can run instead of directly going into the menu of the program. `.\md5.exe --help` will display all these commands. `--test` runs test cases, `--version` displays current version of the program, `--file` will allow the user to enter the name of a file on the command line, `--string` will allow the user to enter a string on the command line.
+
+![main3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main3.PNG)
+<br/>
+Option 1 allows the user to read in a file to hash. Files have been included with this repo. To hash a file after choosing option 1, enter files/name_of_file.extension. For example, to hash `a.txt`, enter `files/a.txt` after choosing option 1.
+
+![main4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main4.PNG)
+<br/>
+Similar operation above. User first enters a string which is then written to file. This file is then hashed.
 
 ## Complexity
-
+This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
