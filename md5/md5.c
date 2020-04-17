@@ -307,13 +307,11 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
   }
 }
 
-void testing() {
-  printf("Hello");
-}
-
 // Main function
 int main(int argc, char **argv) {
+  FILE *fileArg = NULL;
   FILE *file = NULL; // File pointer for files in the 'files' directory
+  FILE *hashFile = NULL; // File pointer for files in the 'hashVals' directory, containing the hashed value for relevant files
   FILE *userPtr; // File pointer for file created from user input
   MD5_CTX md5_ctx_val; // Context
   union block B; // Union block
@@ -322,64 +320,80 @@ int main(int argc, char **argv) {
   char initOption, file_name[FNSZ] = {0};
   char user_file[50] = "user_input.txt"; // File that stores user input
   char string[100]; // User input
+  char* hashVals[] = {"0cc175b9c0f1b6a831c399e269772661", "900150983cd24fb0d6963f7d28e17f72"};
+  char testFile;
+  unsigned char testVal[64];
     
   // Command line arguments
   if (argc == 2 && strcmp(argv[1], "--help") == 0) {
     printf("\nUsage: ./md5 (Displays menu system - program will keep running, user can keep hashing a file/input)");
     printf("\n   or  ./md5 [options]");
     printf("\n\nwhere options include:");
-    printf("\n--test     Run tests to check if code is correct");
-    printf("\n--version  Display the current version of the program");
-    printf("\n--file     Allows you to specify a file to hash from the command line");
-    printf("\n--string   Allows you to specify a string/sentence to hash from the command line");
+    printf("\n--test             Run tests to check if code is correct");
+    printf("\n--version          Display the current version of the program");
+    printf("\n--file <file>      Allows you to specify a file to hash from the command line");
+    printf("\n--string <string>  Allows you to specify a string/sentence to hash from the command line");
 
     exit(1);
   }
-
-  // Test cases
-  // if (argc == 2 && strcmp(argv[1], "--test") && strcmp(argv[2], "files/a.txt") == 0) {
-  //   testing();
-
-  //   for(int counter = 1; counter < argc; counter++) 
-  //     printf("\nargv[%d]: %s",counter,argv[counter]); 
-
-  //   // md5_init(&md5_ctx_val);
-  //   // file = md5_hash(&md5_ctx_val, &B, file_name);
-
-  //   // // Notifies user of error if unable to open file
-  //   // if (!file) {
-  //   //   fprintf (stderr, "ERROR: Failed to open file '%s'\n", file_name);
-
-  //   //   return 1;
-  //   // }
-
-  //   // if ()
-  //   exit(1);
-  // } else {
-  //   printf("\nERROR: Please provide a file to test for hash value\n");
-
-  //   exit(1);
-  // }
 
   if(argc >= 2) { 
-    for(int counter = 1; counter < argc; counter++) {
-      // printf("\nargv[%d]: %s", counter, argv[counter]);
+    if ((strcmp(argv[1], "--test") == 0) || (strcmp(argv[1], "--t") == 0)) {
+      file = fopen(argv[2], "r");
+      testFile = fgetc(file);
+
+      while (testFile != EOF) {
+        printf("%c", testFile);
+        testFile = fgetc(file);
+      }
+
+      // printf("\n");
+      
+      md5_init(&md5_ctx_val);
+      file = md5_hash(&md5_ctx_val, &B, argv[2]);
     }
 
-    if (strcmp(argv[1], "--test") == 0) {
-      printf("Test");
+    // FIND A BETTER WAY
+    // Hash a file from the command line
+    if ((strcmp(argv[1], "--string") == 0) || (strcmp(argv[1], "--s") == 0)) {
+      userPtr = fopen(user_file, "w");
+        
+      if(userPtr == NULL) {
+        printf("ERROR: File doesn't exist");   
+        exit(1);             
+      }
+
+      // Write input to file
+      fprintf(userPtr, "%s", argv[2]);
+      fclose(userPtr);
+      
+      // Hash file
+      md5_init(&md5_ctx_val);
+      file = md5_hash(&md5_ctx_val, &B, user_file);
+
+      if (!file) {
+        fprintf (stderr, "ERROR: Failed to open file '%s'\n", user_file);
+
+        return 1;
+      }
+
+      // Display results of MD5 digest
+      for(i = 0; i < 4; i++) {
+        printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+        printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+        printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+        printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+      }
     }
 
-    exit(1);
-  }
+    // Check version from command line
+    if ((strcmp(argv[1], "--version") == 0) || (strcmp(argv[1], "--v") == 0)) {
+      printf("md5.c - 1.0\n");
 
-  // Version
-  if (argc == 2 && strcmp(argv[1], "--version") == 0) {
-    printf("md5.c - 1.0\n");
-
-    #ifdef __GNUC__
-      printf ("gcc.exe - %d.%d\n", __GNUC__, __GNUC_MINOR__);
-    #endif
+      #ifdef __GNUC__
+        printf ("gcc.exe - %d.%d\n", __GNUC__, __GNUC_MINOR__);
+      #endif
+    }
 
     exit(1);
   }

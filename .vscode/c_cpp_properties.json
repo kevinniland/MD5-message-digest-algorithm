@@ -3,14 +3,14 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:/OpenSSL-Win64/include/openssl/",
+                "C:/OpenSSL-Win64/include/",
                 "${workspaceFolder}/**"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,
                 "path": [
                     "C:/mingw-w64/mingw64/bin",
-                    "C:/OpenSSL-Win64/include/openssl/",
+                    "C:/OpenSSL-Win64/include/",
                     "${workspaceRoot}"
                 ]
             },
