@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 // Union block
 union block {
@@ -309,6 +310,9 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
 // Main function
 int main(int argc, char **argv) {
+  const char *hashes[] = { "d41d8cd98f00b204e9800998ecf8427e", "0cc175b9c0f1b6a831c399e269772661", "900150983cd24fb0d6963f7d28e17f72",
+                        "f96b697d7cb7938d525a2f31aaf161d0", "c3fcd3d76192e4007dfb496cca67e13b", "d174ab98d277d9f5a5611c2c9f419d9f",
+                        "57edf4a22be3c955ac49da2e2107b67a" };
   FILE *fileArg = NULL;
   FILE *file = NULL; // File pointer for files in the 'files' directory
   FILE *hashFile = NULL; // File pointer for files in the 'hashVals' directory, containing the hashed value for relevant files
@@ -316,13 +320,11 @@ int main(int argc, char **argv) {
   MD5_CTX md5_ctx_val; // Context
   union block B; // Union block
   bool keepAlive = true; // Keep while loop running until user manually exits
-  int menuOption, i;
+  int menuOption, i, hashFound = false;
   char initOption, file_name[FNSZ] = {0};
   char user_file[50] = "user_input.txt"; // File that stores user input
-  char string[100]; // User input
-  char* hashVals[] = {"0cc175b9c0f1b6a831c399e269772661", "900150983cd24fb0d6963f7d28e17f72"};
-  char testFile;
-  unsigned char testVal[64];
+  char string[100], line[100]; // User input
+  char testFile, hashVal;
     
   // Command line arguments
   if (argc == 2 && strcmp(argv[1], "--help") == 0) {
@@ -337,20 +339,71 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  /**
+   * Test command
+   * 
+   * Pass in a file to when running the '--test' command to see if the hash result of it is correct. Will compare the result of it
+   * against an array of hashes
+   */ 
   if(argc >= 2) { 
     if ((strcmp(argv[1], "--test") == 0) || (strcmp(argv[1], "--t") == 0)) {
-      file = fopen(argv[2], "r");
+      userPtr = fopen(user_file, "w");
+      hashVal = fgetc(userPtr);
+
+      file = fopen(argv[2], "r+");
       testFile = fgetc(file);
-
-      while (testFile != EOF) {
-        printf("%c", testFile);
-        testFile = fgetc(file);
-      }
-
-      // printf("\n");
       
       md5_init(&md5_ctx_val);
       file = md5_hash(&md5_ctx_val, &B, argv[2]);
+
+      // Display results of MD5 digest
+      for(i = 0; i < 4; i++) {
+        printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+        printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+        printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+        printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+
+        // Save value of hash to file
+        fprintf(userPtr, "%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+        fprintf(userPtr, "%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+        fprintf(userPtr, "%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+        fprintf(userPtr, "%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+      }
+
+      fprintf(userPtr, "\n");
+      fclose(userPtr);
+
+      userPtr = fopen(user_file, "r");
+
+      if (userPtr == NULL) {
+        printf("ERROR: Unable to open file\n");
+      }
+
+      /**
+       * Compares the file containing the hash value of most recent file to that of an 
+       * array of hashes and checks to see if it is correct
+       */ 
+      while (fgets(line, sizeof line, userPtr)) {
+        for (int i = 0; i < (sizeof hashes)/sizeof *hashes; i++) {
+          if (strstr(line, hashes[i]) != NULL) {
+            // Found correct hash value
+            hashFound = true; 
+
+            // Didn't find correct hash value or hash value for file is not in array
+            if (strstr(line, hashes[i]) == NULL) {
+              hashFound = false;
+            }
+          }
+        }
+      }
+
+      if (hashFound == true) {
+        printf("\n\nSUCCESS: Hash for file %s is correct", argv[2]);
+      } else if (hashFound == false) {
+        printf("\n\nERROR: Hash for file %s is not correct or isn't contained in the list of hashes", argv[2]);
+      }
+
+      fclose(userPtr);
     }
 
     // FIND A BETTER WAY

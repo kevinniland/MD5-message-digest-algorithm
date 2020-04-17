@@ -4,6 +4,7 @@
         "stdint.h": "c",
         "stdio.h": "c",
         "inttypes.h": "c",
-        "md5.h": "c"
+        "md5.h": "c",
+        "string.h": "c"
     }
 }
