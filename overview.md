@@ -233,7 +233,7 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 
 ## References
 * [1] [MD5](https://en.wikipedia.org/wiki/MD5)
-* [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321).
+* [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321) - Used to help implement this version of the MD5 algorithm.
 * [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c).
 * [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14).
 * [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
