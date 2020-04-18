@@ -1,7 +1,7 @@
 # MD5 Message Digest Algorithm
  _4th year Theory of Algorithms project. An application written in C that takes in a user input/file and calculates the MD5 hash digest of the user input/file._
 
- * Length: 6 pages (based on ...)
+ * Length: 9 pages (based on ...)
  
  ### Project Statement
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
@@ -194,6 +194,25 @@ Option 1 allows the user to read in a file to hash. Files have been included wit
 ![main4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main4.PNG)
 <br/>
 Similar operation above. User first enters a string which is then written to file. This file is then hashed.
+
+#### Array of hashes (for testing)
+An array containing the hash values for various messages is used to check whether or not the hash of a file is correct. Below are the hashes for all messages currently supported:
+
+- MD5 ("") = d41d8cd98f00b204e9800998ecf8427e - FAILS (Incorrect hash returned)
+- MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661 - PASSES (Correct hash returned)
+- MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72 - PASSES (Correct hash returned)
+- MD5 ("md5") = 1bc29b36f623ba82aaf6724fd3b16718 - PASSES (Correct hash returned)
+- MD5 ("hash") = 0800fc577294c34e0b28ad2839435945 - PASSES (Correct hash returned)
+- MD5 ("hello") = 5d41402abc4b2a76b9719d911017c592 - PASSES (Correct hash returned)
+- MD5 ("message") = 78e731027d8fd50ed642340b7c9a63b3 - PASSES (Correct hash returned)
+- MD5 ("digest") = c10f77963a2b21079156a0e5c5a4bb3c - PASSES (Correct hash returned)
+- MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0 - PASSES (Correct hash returned)
+- MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b - PASSES (Correct hash returned)
+- MD5 ("123") = 202cb962ac59075b964b07152d234b70 - PASSES (Correct hash returned)
+- MD5 ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") = d174ab98d277d9f5a5611c2c9f419d9f - FAILS (Incorrect hash returned)
+- MD5 ("12345678901234567890123456789012345678901234567890123456789012345678901234567890") = 57edf4a22be3c955ac49da2e2107b67a - FAILS (Incorrect hash returned)
+
+_From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
 
 ## Complexity
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
