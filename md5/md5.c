@@ -1,8 +1,8 @@
 /**
  * Kevin Niland
+ * 
  * MD5 message digest algorithm implementation
  */ 
-#include <assert.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -310,18 +310,17 @@ FILE *md5_hash(MD5_CTX *md5_ctx, union block *B, char *file) {
 
 // Main function
 int main(int argc, char **argv) {
+  // Array of hashes - Used to check if the hash of a is correct
   const char *hashes[] = { "d41d8cd98f00b204e9800998ecf8427e", "0cc175b9c0f1b6a831c399e269772661", "900150983cd24fb0d6963f7d28e17f72",
                         "f96b697d7cb7938d525a2f31aaf161d0", "c3fcd3d76192e4007dfb496cca67e13b", "d174ab98d277d9f5a5611c2c9f419d9f",
                         "57edf4a22be3c955ac49da2e2107b67a" };
-  FILE *fileArg = NULL;
   FILE *file = NULL; // File pointer for files in the 'files' directory
-  FILE *hashFile = NULL; // File pointer for files in the 'hashVals' directory, containing the hashed value for relevant files
   FILE *userPtr; // File pointer for file created from user input
   MD5_CTX md5_ctx_val; // Context
   union block B; // Union block
   bool keepAlive = true; // Keep while loop running until user manually exits
   int menuOption, i, hashFound = false;
-  char initOption, file_name[FNSZ] = {0};
+  char file_name[FNSZ] = {0};
   char user_file[50] = "user_input.txt"; // File that stores user input
   char string[100], line[100]; // User input
   char testFile, hashVal;
@@ -404,11 +403,30 @@ int main(int argc, char **argv) {
       }
 
       fclose(userPtr);
-    }
+    } else if ((strcmp(argv[1], "--version") == 0) || (strcmp(argv[1], "--v") == 0)) {
+      printf("md5.c - 1.0\n");
 
-    // FIND A BETTER WAY
-    // Hash a file from the command line
-    if ((strcmp(argv[1], "--string") == 0) || (strcmp(argv[1], "--s") == 0)) {
+      #ifdef __GNUC__
+        printf ("gcc.exe - %d.%d\n", __GNUC__, __GNUC_MINOR__);
+      #endif
+    } else if ((strcmp(argv[1], "--file") == 0) || (strcmp(argv[1], "--f") == 0)) {
+      userPtr = fopen(user_file, "w");
+      hashVal = fgetc(userPtr);
+
+      file = fopen(argv[2], "r+");
+      testFile = fgetc(file);
+      
+      md5_init(&md5_ctx_val);
+      file = md5_hash(&md5_ctx_val, &B, argv[2]);
+
+      // Display results of MD5 digest
+      for(i = 0; i < 4; i++) {
+        printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
+        printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
+        printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
+        printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
+      }
+    } else if ((strcmp(argv[1], "--string") == 0) || (strcmp(argv[1], "--s") == 0)) {
       userPtr = fopen(user_file, "w");
         
       if(userPtr == NULL) {
@@ -437,15 +455,6 @@ int main(int argc, char **argv) {
         printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
         printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
       }
-    }
-
-    // Check version from command line
-    if ((strcmp(argv[1], "--version") == 0) || (strcmp(argv[1], "--v") == 0)) {
-      printf("md5.c - 1.0\n");
-
-      #ifdef __GNUC__
-        printf ("gcc.exe - %d.%d\n", __GNUC__, __GNUC_MINOR__);
-      #endif
     }
 
     exit(1);
@@ -540,7 +549,7 @@ int main(int argc, char **argv) {
         }
 
         break;
-        case 3:
+      case 3:
           // Terminate the program
           printf("\nTerminating program...\n");
           fclose(file);
