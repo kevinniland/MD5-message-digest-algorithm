@@ -183,18 +183,6 @@ CHANGE
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
 
-![main1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main1.PNG)
-<br/>
-List of commands user can run instead of directly going into the menu of the program. `.\md5.exe --help` will display all these commands. `--test` runs test cases, `--version` displays current version of the program, `--file` will allow the user to enter the name of a file on the command line, `--string` will allow the user to enter a string on the command line.
-
-![main3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main3.PNG)
-<br/>
-Option 1 allows the user to read in a file to hash. Files have been included with this repo. To hash a file after choosing option 1, enter files/name_of_file.extension. For example, to hash `a.txt`, enter `files/a.txt` after choosing option 1.
-
-![main4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main4.PNG)
-<br/>
-Similar operation above. User first enters a string which is then written to file. This file is then hashed.
-
 #### Array of hashes (for testing)
 An array containing the hash values for various messages is used to check whether or not the hash of a file is correct. Below are the hashes for all messages currently supported:
 
@@ -216,6 +204,13 @@ _From this, it can be seen that messages containing numbers won't always be hash
 
 ## Complexity
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
+
+### Algorithm
+
+### Algorithms that attempt to reverse it
+
+### Time Complexity
+MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes).
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
@@ -246,4 +241,5 @@ This section will give an analysis of the MD5 algorithm, including the complexit
 * [12] [Bitwise Operators in C](https://www.tutorialspoint.com/cprogramming/c_bitwise_operators.htm)
 * [13] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
 * [14] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
+* [15] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5)
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
