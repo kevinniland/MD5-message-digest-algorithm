@@ -53,8 +53,12 @@ You should now be able to compile C programs using GCC. If you have any issues, 
 * A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
 * Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
    * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
-   * `.\md5 --test` - This will run test cases....
+   * `.\md5 --test` - This will allow you to test the hash of a file to see if it's correct.
+   * `.\md5 --test-suites` - This will display all messages and their accompanying hash value to the screen.
    * `.\md5 --version` - This will display the current version of program.
+   * `.\md5 --file` - This will allow you to hash a file from the command line.
+   * `.\md5 --string` - This will allow you to hash a string from the command line.
+   * `.\md5 --print-file` - This will display the contents of file.
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
@@ -206,6 +210,7 @@ _From this, it can be seen that messages containing numbers won't always be hash
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
 
 ### Algorithm
+In cryptography, MD5 (Message-Digest algorithm 5) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
 
 ### Algorithms that attempt to reverse it
 
@@ -242,4 +247,5 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * [13] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
 * [14] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
 * [15] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5)
+* [16] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes)
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
