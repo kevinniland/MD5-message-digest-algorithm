@@ -372,19 +372,10 @@ int main(int argc, char **argv) {
         fileLine = fgetc(file);
         
         md5_init(&md5_ctx_val);
-
-        printf("\nFile: %s\n", argv[3]);
-        printf("File hash: ");
-
         file = md5_hash(&md5_ctx_val, &B, argv[3]);
 
         // Display results of MD5 digest
         for(i = 0; i < 4; i++) {
-          printf("%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
-          printf("%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
-          printf("%02x", (md5_ctx_val.state[i] >> 16) & 0x000000ff); 
-          printf("%02x", (md5_ctx_val.state[i] >> 24) & 0x000000ff);
-
           // Save value of hash to file
           fprintf(userPtr, "%02x", (md5_ctx_val.state[i] >> 0 ) & 0x000000ff);
           fprintf(userPtr, "%02x", (md5_ctx_val.state[i] >> 8) & 0x000000ff);
@@ -421,16 +412,16 @@ int main(int argc, char **argv) {
 
         // If hash has been found, notify user of success
         if (hashFound == true) {
-          printf("\n\nSUCCESS: Hash for file %s is correct", argv[3]);
+          printf("\nSUCCESS: Hash for file %s is correct", argv[3]);
         } else if (hashFound == false) {
-          printf("\n\nERROR: Hash for file %s is not correct or isn't contained in the list of hashes", argv[3]);
+          printf("\nERROR: Hash for file %s is not correct or isn't contained in the list of hashes", argv[3]);
         }
 
         fclose(userPtr);
       }
 
       if ((strcmp(argv[2], "--string") == 0) || (strcmp(argv[2], "--s") == 0)) {
-        
+
       }
     } else if ((strcmp(argv[1], "--test-suites") == 0) || (strcmp(argv[1], "--t-s") == 0)) {
       printf("\nMD5 Message Digest Algorithm - MD5 Test Suite");
