@@ -36,14 +36,14 @@ This section provides a quick overview of setting up a compiler for C programs o
 * **Install Cygwin** Download the [Cygwin installer](https://cygwin.com/install.html). Run either the 32 bit or 64 bit version depending on your version of Windows. Cygwin’s setup wizard will walk you through a series of steps. When you reach the “Select Packages” step, don’t bother selecting any packages yet. Just go ahead and click Next. We’ll add additional packages from the command line later. Move the Cygwin installer to a folder of your choice (it'll be needed later to install packages).
 * **Install Required Cygwin Packages** Next, you’ll need to add several packages to Cygwin. Open a command prompt, navigate to the folder where the Cygwin installer is located, and run the following command:
    
-`C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
+   `C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
    
 A window will pop up and download all the required packages along with their dependencies.
    
 * **Download, Build and Install the Latest GCC** Open a Cygwin terminal, either from the Start menu or by running Cygwin.bat from the Cygwin installation folder. To download and extract the latest GCC source code, enter the following commands in the Cygwin terminal:
 
-`wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
-`tar xf gcc-4.9.2.tar.gz`
+   `wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
+   `tar xf gcc-4.9.2.tar.gz`
 
 You should now be able to compile C programs using GCC. If you have any issues, please refer to the above guide for installing GCC on Windows.
 
@@ -214,8 +214,14 @@ Start of md5_hash. Variables for storing previous hash values, keeping track of 
 
 ![md5_hash3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash3.PNG)
 ![md5_hash4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash4.PNG)
+<br/>
 The manual padding operations performed are done as follows:
-
+* If size is equal to 64, continue - no padding needed
+* If size is greater than 56 and less than 64, not enough space for 64 bits at end of file
+* If size is less than 56 and greater than 0, pad file at the end
+* If size is equal to 0 and pad is equal to 0, end of file - file was a size of multiple 64
+* If size is equal to 0 and pad is equal to 1, end of file - padding started in previous block, pad file with all zeros
+     
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
