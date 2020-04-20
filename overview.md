@@ -1,7 +1,7 @@
 # MD5 Message Digest Algorithm
  _4th year Theory of Algorithms project. An application written in C that takes in a user input/file and calculates the MD5 hash digest of the user input/file._
 
- * Length: 6 pages (based on ...)
+ * Length: 9 pages (based on ...)
  
  ### Project Statement
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
@@ -51,10 +51,14 @@ You should now be able to compile C programs using GCC. If you have any issues, 
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
 * A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
-* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
-   * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
-   * `.\md5 --test` - This will run test cases....
-   * `.\md5 --version` - This will display the current version of program.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program. Each command can be ran by entering in the shorthand of the command, shown below:
+   * `.\md5 --help \ --h` - This will display information on how to run the program, and display all command line arguments the user can specify. 
+   * `.\md5 --test \ --t` - This will allow you to test the hash of a file to see if it's correct.
+   * `.\md5 --test-suites \ --t-s` - This will display all messages and their accompanying hash value to the screen.
+   * `.\md5 --version \ --v` - This will display the current version of program.
+   * `.\md5 --file \ --f` - This will allow you to hash a file from the command line.
+   * `.\md5 --string --s` - This will allow you to hash a string from the command line.
+   * `.\md5 --print-file \ --p-f` - This will display the contents of file.
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
@@ -101,6 +105,37 @@ Now you're all set up to use either GCC or `make` to compile and run the program
    then be written to file, at which point it will be automatically hashed and the result will be printed out.
    3. To exit the program, choose option 3.
 * Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
+
+---
+
+## Testing
+This implementation of the MD5 algorithm supports the ability to test the hash of a file or a string. The hash is checked against an array that contains hashes for several different messages. Testing is performed by using the command `--test`. The user can then choose to check the hash of a file or a string by following the test command with either `--file` or `--string`.
+
+### Testing a file or a string
+The easiest way I found to test the hash of a file or a string was to first read in the file or string and perform the MD5 algorithm on it. The value of this hash would then be written to file. The contents of the file would then be checked to see if it is contained in the array of hashes shown below. As can be seen, this array is quite limited at the moment and mainly contains the hash values of the messages found in the RFC 1321 document. This array will be expanded on in the future but feel free to add the relevant hash value for any message you see fit.
+
+### Checking the hash of a file or a string
+* [checkhash](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/images/checkhash.png)
+
+### Array of hashes
+Below are the hashes for all messages currently supported:
+
+- MD5 ("") = d41d8cd98f00b204e9800998ecf8427e - FAILS (Incorrect hash returned)
+- MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661 - PASSES (Correct hash returned)
+- MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72 - PASSES (Correct hash returned)
+- MD5 ("md5") = 1bc29b36f623ba82aaf6724fd3b16718 - PASSES (Correct hash returned)
+- MD5 ("hash") = 0800fc577294c34e0b28ad2839435945 - PASSES (Correct hash returned)
+- MD5 ("hello") = 5d41402abc4b2a76b9719d911017c592 - PASSES (Correct hash returned)
+- MD5 ("message") = 78e731027d8fd50ed642340b7c9a63b3 - PASSES (Correct hash returned)
+- MD5 ("digest") = c10f77963a2b21079156a0e5c5a4bb3c - PASSES (Correct hash returned)
+- MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0 - PASSES (Correct hash returned)
+- MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b - PASSES (Correct hash returned)
+- MD5 ("123") = 202cb962ac59075b964b07152d234b70 - PASSES (Correct hash returned)
+- MD5 ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") = d174ab98d277d9f5a5611c2c9f419d9f - FAILS (Incorrect hash returned)
+- MD5 ("12345678901234567890123456789012345678901234567890123456789012345678901234567890") = 57edf4a22be3c955ac49da2e2107b67a - FAILS (Incorrect hash returned)
+
+_From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
+
 
 ---
 
@@ -183,20 +218,16 @@ CHANGE
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
 
-![main1](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main1.PNG)
-<br/>
-List of commands user can run instead of directly going into the menu of the program. `.\md5.exe --help` will display all these commands. `--test` runs test cases, `--version` displays current version of the program, `--file` will allow the user to enter the name of a file on the command line, `--string` will allow the user to enter a string on the command line.
-
-![main3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main3.PNG)
-<br/>
-Option 1 allows the user to read in a file to hash. Files have been included with this repo. To hash a file after choosing option 1, enter files/name_of_file.extension. For example, to hash `a.txt`, enter `files/a.txt` after choosing option 1.
-
-![main4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/main4.PNG)
-<br/>
-Similar operation above. User first enters a string which is then written to file. This file is then hashed.
-
 ## Complexity
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
+
+### Algorithm
+In cryptography, MD5 (Message-Digest algorithm 5) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
+
+### Algorithms that attempt to reverse it
+
+### Time Complexity
+MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes).
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
@@ -214,7 +245,7 @@ This section will give an analysis of the MD5 algorithm, including the complexit
 
 ## References
 * [1] [MD5](https://en.wikipedia.org/wiki/MD5)
-* [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321).
+* [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321) - Used to help implement this version of the MD5 algorithm.
 * [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c).
 * [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14).
 * [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
@@ -227,4 +258,6 @@ This section will give an analysis of the MD5 algorithm, including the complexit
 * [12] [Bitwise Operators in C](https://www.tutorialspoint.com/cprogramming/c_bitwise_operators.htm)
 * [13] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
 * [14] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
+* [15] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5)
+* [16] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes)
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
