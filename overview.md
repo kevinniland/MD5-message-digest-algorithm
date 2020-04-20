@@ -1,7 +1,5 @@
 # MD5 Message Digest Algorithm
  _4th year Theory of Algorithms project. An application written in C that takes in a user input/file and calculates the MD5 hash digest of the user input/file._
-
- * Length: 14 pages (based on a standard Word document)
  
  ### Project Statement
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
@@ -232,6 +230,9 @@ This section will give an analysis of the MD5 algorithm, including the complexit
 ### Algorithm
 In cryptography, MD5 (Message-Digest algorithm) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
 
+### Padding
+Padding is any of a number of distinct practices which all include adding data to the beginning, middle, or end of a message prior to encryption. [19](https://en.wikipedia.org/wiki/Padding_(cryptography))  [13](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
+
 ### Security/Algorithms that attempt to reverse it
 #### Overview
 The security of the MD5 hash function is severely compromised. A collision attack, which is an attack on a cryptographic hash that tries to find two inputs producing the same hash value [17](https://en.wikipedia.org/wiki/Collision_attack), exists that can find collisions within seconds on a computer with a 2.6 GHz Pentium 4 processor (complexity of 224.1). Further, there is also a chosen-prefix collision attack that can produce a collision for two inputs with specified prefixes within seconds, using off-the-shelf computing hardware (complexity 239) [18](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack). These hash and collision attacks have been demonstrated in the public in various situations, including colliding document files and digital certificates. [1](https://en.wikipedia.org/wiki/MD5#Security)
@@ -249,14 +250,14 @@ As discussed, the attacks against MD5 are collision attacks, not pre-image attac
 The main take from analysing the security of the MD5 algorithm is that is shouldn't be used. You should not use elementary cryptographic algorithms, but ___protocols___ which assemble several algorithms so that they collectively provide some security features (e.g. transfer of data with confidentiality and integrity). For storing passwords (more accurately, password verification tokens), don't make a custom mix of a hash function and salts; use a construction which has been studied specifically for such a use. If a hash function is desired, SHA-256 is much more preferable. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
 
 ### Time Complexity
-MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes).
+MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes) [14](https://stackoverflow.com/questions/43625569/time-complexity-of-md5).
 
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
 * **Week 2:** In this week a video on the SHA Standard was made available to us, which gave us an overview of the SHA specification. In this video, our lecturer went through the Secure Hash Standard document [8] published by the National Institute of Standards and Technology. Further reading included researching and discerning the differences between the SHA and MD5 hash algorithms, from various resources [9], [10], [11]. Some differences include MD5 is faster than SHA, SHA is more secure than MD5, MD5 can have a bit length of 128 while SHA can have a bit length of 160. They also disccused how MD5 is considered broken in the sense that you can generate a collision and thus should not be used for any security applications. SHA is not known to be broken and is believed to be secure. I also researched how each generated a hash of a message.
 * **Week 3:** In this week a video on C bit operations was made available to us and I coded up the file from this. I proceeded to research bitwise operators in C to get a better understanding of how each worked [12]. I then re-read the suggested documents on MD5 and SHA [1], [8] due to the fact that my understanding of each would be improved.
 
-![bitwise](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/bitwise.PNG)
+![bitwise](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/bitwise.PNG) [6](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/), [7](https://en.wikipedia.org/wiki/Bitwise_operations_in_C)
 
 * **Week 4:** In this week a video on the functions and constants in SHA was made available to us and I coded up the file from this.
 * **Week 5:** In this week a video on padding a message in C was made available to us and I coded up the file from this. For further research and reading, I then looked up the differences between the padding in MD5 and SHA, both from the relative documents on each and from other sources. One major difference would be the fact that when you add the message length (after padding), MD5 uses little-endian but SHA256 uses big-endian. This week is where the main project was properly started. I began with the padding as I coded up that aspect of it in a similar fashion to that of padding shown to us in the padding video.
@@ -284,4 +285,5 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * [16] [Is MD5 considered insecure?](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure) - Used as a reference on a discussion on the insecurity of MD5.
 * [17] [Collision Attack](https://en.wikipedia.org/wiki/Collision_attack) - Used to briefly discuss a collision attack.
 * [18] [Chosen-prefix Collision Attack](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack) - Used to briefly discuss a chosen-prefix collision attack.
+* [19] [Padding](https://en.wikipedia.org/wiki/Padding_(cryptography))
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256)
