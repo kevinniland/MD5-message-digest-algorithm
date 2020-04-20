@@ -95,10 +95,14 @@ Now you're all set up to use either GCC or `make` to compile and run the program
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
 * To compile using GCC, run the command `gcc -o md5 .\md5.c` inside this directory. 
 * To compile using `make`, run the command `make`.
-* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
-   * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
-   * `.\md5 --test` - This will run test cases....
-   * `.\md5 --version` - This will display the current version of program.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program. Each command can be ran by entering in the shorthand of the command, shown below:
+   * `.\md5 --help \ --h` - This will display information on how to run the program, and display all command line arguments the user can specify. 
+   * `.\md5 --test \ --t` - This will allow you to test the hash of a file to see if it's correct.
+   * `.\md5 --test-suites \ --t-s` - This will display all messages and their accompanying hash value to the screen.
+   * `.\md5 --version \ --v` - This will display the current version of program.
+   * `.\md5 --file \ --f` - This will allow you to hash a file from the command line.
+   * `.\md5 --string --s` - This will allow you to hash a string from the command line.
+   * `.\md5 --print-file \ --p-f` - This will display the contents of file.
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
@@ -115,7 +119,9 @@ This implementation of the MD5 algorithm supports the ability to test the hash o
 The easiest way I found to test the hash of a file or a string was to first read in the file or string and perform the MD5 algorithm on it. The value of this hash would then be written to file. The contents of the file would then be checked to see if it is contained in the array of hashes shown below. As can be seen, this array is quite limited at the moment and mainly contains the hash values of the messages found in the RFC 1321 document. This array will be expanded on in the future but feel free to add the relevant hash value for any message you see fit.
 
 ### Checking the hash of a file or a string
-* [checkhash](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/images/checkhash.png)
+![checkhash](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/checkhash.PNG)
+
+The above piece of code checks if the hash value in the file is contained in the array of hashes. 
 
 ### Array of hashes
 Below are the hashes for all messages currently supported:
@@ -135,7 +141,6 @@ Below are the hashes for all messages currently supported:
 - MD5 ("12345678901234567890123456789012345678901234567890123456789012345678901234567890") = 57edf4a22be3c955ac49da2e2107b67a - FAILS (Incorrect hash returned)
 
 _From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
-
 
 ---
 
@@ -222,9 +227,23 @@ After the four transform rounds, we update the states after and then perform a f
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
 
 ### Algorithm
-In cryptography, MD5 (Message-Digest algorithm 5) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
+In cryptography, MD5 (Message-Digest algorithm) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
 
-### Algorithms that attempt to reverse it
+### Security/Algorithms that attempt to reverse it
+#### Overview
+The security of the MD5 hash function is severely compromised. A collision attack, which is an attack on a cryptographic hash that tries to find two inputs producing the same hash value [18](https://en.wikipedia.org/wiki/Collision_attack), exists that can find collisions within seconds on a computer with a 2.6 GHz Pentium 4 processor (complexity of 224.1). Further, there is also a chosen-prefix collision attack that can produce a collision for two inputs with specified prefixes within seconds, using off-the-shelf computing hardware (complexity 239) [19](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack). These hash and collision attacks have been demonstrated in the public in various situations, including colliding document files and digital certificates. [1](https://en.wikipedia.org/wiki/MD5#Security)
+
+In 1996, a flaw was found in the design of MD5 and was not deemed a major weakness at the time. In 2004, it was shown that MD5 is not collision-resistant which doesn't make it suitable for applications like SSL certificates or digital signatures, which rely collision-resitant algorithms for security.
+
+#### MD5 for passwords
+Using salted MD5 for passwords is not recommended. Not because of MD5's cryptographic weaknesses, but because it is fast. This means that an attacker can try billions of passwords per second on a single GPU. [17](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+
+#### MD5 for file integrity
+Using MD5 for file integrity may or may not be a practical problem, depending on the exact usage scenario.
+
+As discussed, the attacks against MD5 are collision attacks, not pre-image attacks. This means an attacker can produce two files with the same hash, if they have control over both of them but they can't match the hash of an existing file they didn't influence. [17](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+
+The main take from analysing the security of the MD5 algorithm is that is shouldn't be used. You should not use elementary cryptographic algorithms, but ___protocols___ which assemble several algorithms so that they collectively provide some security features (e.g. transfer of data with confidentiality and integrity). For storing passwords (more accurately, password verification tokens), don't make a custom mix of a hash function and salts; use a construction which has been studied specifically for such a use. If a hash function is desired, SHA-256 is much more preferable. [17](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
 
 ### Time Complexity
 MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes).
@@ -244,20 +263,23 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * **Week 9 - 11:** Week 9 - 11 was mainly comprised of finsihing off the project and writing up documentation.
 
 ## References
-* [1] [MD5](https://en.wikipedia.org/wiki/MD5)
+* [1] [MD5](https://en.wikipedia.org/wiki/MD5) - Used to discuss various aspects of the MD5 algorithm, such as an overview of it and it's security.
 * [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321) - Used to help implement this version of the MD5 algorithm.
-* [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c).
-* [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14).
-* [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
-* [6] [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/).
-* [7] [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C).
-* [8] [Secure Hash Standard PDF](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
-* [9] [Algorithm Complexity & Security: MD5 or SHA1](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1)
-* [10] [Difference between MD5 and SHA1](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/)
-* [11] [Is SHA1 better than MD5 only because it generates a hash of 160 bits?](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits)
+* [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c) - Used as a reference to help implement certain aspects of this implementation, such as padding and printing the hash value.
+* [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14) - Video watched during research portion to help gain a better understanding of the MD5 hash algorihtm. 
+* [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0) - Video also watched during research portion to help gain a better understanding of the MD5 hash algorihtm. This video contains diagrams to help visualize the operation of the algorithm. 
+* [6] [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/) - Used during research portion to help gain a better understanding of the bitwise operators in C, which were used heavily in the implemenation of the algorithm.
+* [7] [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C) - Wikipedia page on the bitwise operations in C, which was also helpful in understanding the operators further.
+* [8] [Secure Hash Standard PDF](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf) - Document used during video lectures in the implemenation of SHA-256.
+* [9] [Algorithm Complexity & Security: MD5 or SHA1](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1) - Used as a reference on the differences between MD5 and SHA1. Helpful in seeing the exact properties of MD5.
+* [10] [Difference between MD5 and SHA1](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/) - Also used to determine the differences between MD5 and SHA.
+* [11] [Is SHA1 better than MD5 only because it generates a hash of 160 bits?](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits) - Used as a reference on the issue of collision with MD5.
 * [12] [Bitwise Operators in C](https://www.tutorialspoint.com/cprogramming/c_bitwise_operators.htm)
 * [13] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
 * [14] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
 * [15] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5)
 * [16] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes)
-* Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
+* [17] [Is MD5 considered insecure?](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+* [18] [Collision Attack](https://en.wikipedia.org/wiki/Collision_attack)
+* [19] [Chosen-prefix Collision Attack](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack)
+* Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256)
