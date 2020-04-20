@@ -185,12 +185,8 @@ D.
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
 
 ### Implementation
-This section will give a quick explanation of the most significant parts of the program.
+This section will give a quick explanation of the most significant and important parts of the program:
 <br/>
-![block_context](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/block_context.PNG)
-<br/>
-Union block for ...
-
 ![constants](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/constants.PNG)
 <br/>
 The array K contains the pre-defined hash values used for transform rounds 1 (FF), 2 (GG), 3 (HH), and 4 (II)...
@@ -215,9 +211,9 @@ md5_init starts the MD5 operation. It loads magic initialization constants to se
 <br/>
 Start of md5_hash. Variables for storing previous hash values, keeping track of the number of bits in file, and for assigning initial values to temp variables in memory.
 
-CHANGE
 ![md5_hash3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash3.PNG)
 ![md5_hash4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash4.PNG)
+The manual padding operations performed are done as follows:
 
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
 <br/>
@@ -231,19 +227,19 @@ In cryptography, MD5 (Message-Digest algorithm) is a widely used cryptographic h
 
 ### Security/Algorithms that attempt to reverse it
 #### Overview
-The security of the MD5 hash function is severely compromised. A collision attack, which is an attack on a cryptographic hash that tries to find two inputs producing the same hash value [18](https://en.wikipedia.org/wiki/Collision_attack), exists that can find collisions within seconds on a computer with a 2.6 GHz Pentium 4 processor (complexity of 224.1). Further, there is also a chosen-prefix collision attack that can produce a collision for two inputs with specified prefixes within seconds, using off-the-shelf computing hardware (complexity 239) [19](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack). These hash and collision attacks have been demonstrated in the public in various situations, including colliding document files and digital certificates. [1](https://en.wikipedia.org/wiki/MD5#Security)
+The security of the MD5 hash function is severely compromised. A collision attack, which is an attack on a cryptographic hash that tries to find two inputs producing the same hash value [17](https://en.wikipedia.org/wiki/Collision_attack), exists that can find collisions within seconds on a computer with a 2.6 GHz Pentium 4 processor (complexity of 224.1). Further, there is also a chosen-prefix collision attack that can produce a collision for two inputs with specified prefixes within seconds, using off-the-shelf computing hardware (complexity 239) [18](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack). These hash and collision attacks have been demonstrated in the public in various situations, including colliding document files and digital certificates. [1](https://en.wikipedia.org/wiki/MD5#Security)
 
 In 1996, a flaw was found in the design of MD5 and was not deemed a major weakness at the time. In 2004, it was shown that MD5 is not collision-resistant which doesn't make it suitable for applications like SSL certificates or digital signatures, which rely collision-resitant algorithms for security.
 
 #### MD5 for passwords
-Using salted MD5 for passwords is not recommended. Not because of MD5's cryptographic weaknesses, but because it is fast. This means that an attacker can try billions of passwords per second on a single GPU. [17](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+Using salted MD5 for passwords is not recommended. Not because of MD5's cryptographic weaknesses, but because it is fast. This means that an attacker can try billions of passwords per second on a single GPU. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
 
 #### MD5 for file integrity
 Using MD5 for file integrity may or may not be a practical problem, depending on the exact usage scenario.
 
-As discussed, the attacks against MD5 are collision attacks, not pre-image attacks. This means an attacker can produce two files with the same hash, if they have control over both of them but they can't match the hash of an existing file they didn't influence. [17](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+As discussed, the attacks against MD5 are collision attacks, not pre-image attacks. This means an attacker can produce two files with the same hash, if they have control over both of them but they can't match the hash of an existing file they didn't influence. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
 
-The main take from analysing the security of the MD5 algorithm is that is shouldn't be used. You should not use elementary cryptographic algorithms, but ___protocols___ which assemble several algorithms so that they collectively provide some security features (e.g. transfer of data with confidentiality and integrity). For storing passwords (more accurately, password verification tokens), don't make a custom mix of a hash function and salts; use a construction which has been studied specifically for such a use. If a hash function is desired, SHA-256 is much more preferable. [17](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+The main take from analysing the security of the MD5 algorithm is that is shouldn't be used. You should not use elementary cryptographic algorithms, but ___protocols___ which assemble several algorithms so that they collectively provide some security features (e.g. transfer of data with confidentiality and integrity). For storing passwords (more accurately, password verification tokens), don't make a custom mix of a hash function and salts; use a construction which has been studied specifically for such a use. If a hash function is desired, SHA-256 is much more preferable. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
 
 ### Time Complexity
 MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes).
@@ -274,12 +270,11 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * [9] [Algorithm Complexity & Security: MD5 or SHA1](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1) - Used as a reference on the differences between MD5 and SHA1. Helpful in seeing the exact properties of MD5.
 * [10] [Difference between MD5 and SHA1](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/) - Also used to determine the differences between MD5 and SHA.
 * [11] [Is SHA1 better than MD5 only because it generates a hash of 160 bits?](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits) - Used as a reference on the issue of collision with MD5.
-* [12] [Bitwise Operators in C](https://www.tutorialspoint.com/cprogramming/c_bitwise_operators.htm)
-* [13] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
-* [14] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
-* [15] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5)
-* [16] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes)
-* [17] [Is MD5 considered insecure?](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
-* [18] [Collision Attack](https://en.wikipedia.org/wiki/Collision_attack)
-* [19] [Chosen-prefix Collision Attack](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack)
+* [12] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
+* [13] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256) - A discussion on the padding in MD5 and SHA-256.
+* [14] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5) - A discussion on the time complexity of MD5.
+* [15] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes) - Used as a reference on whether it's possible to decrypt MD5 hashes.
+* [16] [Is MD5 considered insecure?](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure) - Used as a reference on a discussion on the insecurity of MD5.
+* [17] [Collision Attack](https://en.wikipedia.org/wiki/Collision_attack) - Used to briefly discuss a collision attack.
+* [18] [Chosen-prefix Collision Attack](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack) - Used to briefly discuss a chosen-prefix collision attack.
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256)
