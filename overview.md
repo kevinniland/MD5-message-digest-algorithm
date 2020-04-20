@@ -1,7 +1,7 @@
 # MD5 Message Digest Algorithm
  _4th year Theory of Algorithms project. An application written in C that takes in a user input/file and calculates the MD5 hash digest of the user input/file._
 
- * Length: 9 pages (based on ...)
+ * Length: 14 pages (based on a standard Word document)
  
  ### Project Statement
  _You must write a program in the C programming language that calculates the MD5 hash digest of an input. The algorithm is specified in the Request For Comments 1321 document supplied by the Internet Engineering Task Force. The only pre-requisite is that your program performs the algorithm — you are free to decide what input the algorithm should be performed on. I suggest you allow the user to input some free text or a filename via the command line._
@@ -36,14 +36,14 @@ This section provides a quick overview of setting up a compiler for C programs o
 * **Install Cygwin** Download the [Cygwin installer](https://cygwin.com/install.html). Run either the 32 bit or 64 bit version depending on your version of Windows. Cygwin’s setup wizard will walk you through a series of steps. When you reach the “Select Packages” step, don’t bother selecting any packages yet. Just go ahead and click Next. We’ll add additional packages from the command line later. Move the Cygwin installer to a folder of your choice (it'll be needed later to install packages).
 * **Install Required Cygwin Packages** Next, you’ll need to add several packages to Cygwin. Open a command prompt, navigate to the folder where the Cygwin installer is located, and run the following command:
    
-`C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
+   `C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
    
 A window will pop up and download all the required packages along with their dependencies.
    
 * **Download, Build and Install the Latest GCC** Open a Cygwin terminal, either from the Start menu or by running Cygwin.bat from the Cygwin installation folder. To download and extract the latest GCC source code, enter the following commands in the Cygwin terminal:
 
-`wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
-`tar xf gcc-4.9.2.tar.gz`
+   `wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
+   `tar xf gcc-4.9.2.tar.gz`
 
 You should now be able to compile C programs using GCC. If you have any issues, please refer to the above guide for installing GCC on Windows.
 
@@ -95,10 +95,14 @@ Now you're all set up to use either GCC or `make` to compile and run the program
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
 * To compile using GCC, run the command `gcc -o md5 .\md5.c` inside this directory. 
 * To compile using `make`, run the command `make`.
-* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
-   * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
-   * `.\md5 --test` - This will run test cases....
-   * `.\md5 --version` - This will display the current version of program.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program. Each command can be ran by entering in the shorthand of the command, shown below:
+   * `.\md5 --help \ --h` - This will display information on how to run the program, and display all command line arguments the user can specify. 
+   * `.\md5 --test \ --t` - This will allow you to test the hash of a file to see if it's correct.
+   * `.\md5 --test-suites \ --t-s` - This will display all messages and their accompanying hash value to the screen.
+   * `.\md5 --version \ --v` - This will display the current version of program.
+   * `.\md5 --file \ --f` - This will allow you to hash a file from the command line.
+   * `.\md5 --string --s` - This will allow you to hash a string from the command line.
+   * `.\md5 --print-file \ --p-f` - This will display the contents of file.
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
@@ -115,27 +119,29 @@ This implementation of the MD5 algorithm supports the ability to test the hash o
 The easiest way I found to test the hash of a file or a string was to first read in the file or string and perform the MD5 algorithm on it. The value of this hash would then be written to file. The contents of the file would then be checked to see if it is contained in the array of hashes shown below. As can be seen, this array is quite limited at the moment and mainly contains the hash values of the messages found in the RFC 1321 document. This array will be expanded on in the future but feel free to add the relevant hash value for any message you see fit.
 
 ### Checking the hash of a file or a string
-* [checkhash](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/images/checkhash.png)
+![checkhash](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/checkhash.PNG)
+
+The above piece of code checks if the hash value in the file is contained in the array of hashes. 
 
 ### Array of hashes
 Below are the hashes for all messages currently supported:
 
-- MD5 ("") = d41d8cd98f00b204e9800998ecf8427e - FAILS (Incorrect hash returned)
-- MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661 - PASSES (Correct hash returned)
-- MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72 - PASSES (Correct hash returned)
-- MD5 ("md5") = 1bc29b36f623ba82aaf6724fd3b16718 - PASSES (Correct hash returned)
-- MD5 ("hash") = 0800fc577294c34e0b28ad2839435945 - PASSES (Correct hash returned)
-- MD5 ("hello") = 5d41402abc4b2a76b9719d911017c592 - PASSES (Correct hash returned)
-- MD5 ("message") = 78e731027d8fd50ed642340b7c9a63b3 - PASSES (Correct hash returned)
-- MD5 ("digest") = c10f77963a2b21079156a0e5c5a4bb3c - PASSES (Correct hash returned)
-- MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0 - PASSES (Correct hash returned)
-- MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b - PASSES (Correct hash returned)
-- MD5 ("123") = 202cb962ac59075b964b07152d234b70 - PASSES (Correct hash returned)
-- MD5 ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") = d174ab98d277d9f5a5611c2c9f419d9f - FAILS (Incorrect hash returned)
-- MD5 ("12345678901234567890123456789012345678901234567890123456789012345678901234567890") = 57edf4a22be3c955ac49da2e2107b67a - FAILS (Incorrect hash returned)
+|   Message   |  Hash Value  |    Passes?     |
+|:-----------:|:------------:|:------------:|
+| a     |  d41d8cd98f00b204e9800998ecf8427e |      NO (Incorreect hash returned)        |
+| abc |  0cc175b9c0f1b6a831c399e269772661 |    YES (Correect hash returned)          |
+| md5 |  900150983cd24fb0d6963f7d28e17f72 |    YES (Correect hash returned)          |
+| hash |  0800fc577294c34e0b28ad2839435945 |     YES (Correect hash returned)         |
+| hello |  5d41402abc4b2a76b9719d911017c592 |     YES (Correect hash returned)         |
+| message |  78e731027d8fd50ed642340b7c9a63b3 |    YES (Correect hash returned)          |
+| digest |  c10f77963a2b21079156a0e5c5a4bb3c |     YES (Correect hash returned)         |
+| message digest |  f96b697d7cb7938d525a2f31aaf161d0 |    YES (Correect hash returned)          |
+| abcdefghijklmnopqrstuvwxyz |  c3fcd3d76192e4007dfb496cca67e13b |     YES (Correect hash returned)         |
+| 123 |  202cb962ac59075b964b07152d234b70 |     YES (Correect hash returned)         |
+| ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 |  8D93AD635E2C8C822D796BD8726EEF6B | NO (Incorreect hash returned) |
+| 12345678901234567890123456789 |  04CC4AB7C18F13B2FD594B52DFDEDFFF |NO (Incorreect hash returned) |
 
 _From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
-
 
 ---
 
@@ -180,12 +186,8 @@ D.
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
 
 ### Implementation
-This section will give a quick explanation of the most significant parts of the program.
+This section will give a quick explanation of the most significant and important parts of the program:
 <br/>
-![block_context](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/block_context.PNG)
-<br/>
-Union block for ...
-
 ![constants](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/constants.PNG)
 <br/>
 The array K contains the pre-defined hash values used for transform rounds 1 (FF), 2 (GG), 3 (HH), and 4 (II)...
@@ -210,10 +212,16 @@ md5_init starts the MD5 operation. It loads magic initialization constants to se
 <br/>
 Start of md5_hash. Variables for storing previous hash values, keeping track of the number of bits in file, and for assigning initial values to temp variables in memory.
 
-CHANGE
 ![md5_hash3](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash3.PNG)
 ![md5_hash4](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_hash4.PNG)
-
+<br/>
+The manual padding operations performed are done as follows:
+* If size is equal to 64, continue - no padding needed
+* If size is greater than 56 and less than 64, not enough space for 64 bits at end of file
+* If size is less than 56 and greater than 0, pad file at the end
+* If size is equal to 0 and pad is equal to 0, end of file - file was a size of multiple 64
+* If size is equal to 0 and pad is equal to 1, end of file - padding started in previous block, pad file with all zeros
+     
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
@@ -222,9 +230,23 @@ After the four transform rounds, we update the states after and then perform a f
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
 
 ### Algorithm
-In cryptography, MD5 (Message-Digest algorithm 5) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
+In cryptography, MD5 (Message-Digest algorithm) is a widely used cryptographic hash function with a 128-bit hash value. As an Internet standard (RFC 1321), MD5 has been employed in a wide variety of security applications, and is also commonly used to check the integrity of files. An MD5 hash is typically expressed as a 32 digit hexadecimal number. MD5 is a strengthened version of MD4. Like MD4, the MD5 hash was invented by Professor Ronald Rivest of MIT.
 
-### Algorithms that attempt to reverse it
+### Security/Algorithms that attempt to reverse it
+#### Overview
+The security of the MD5 hash function is severely compromised. A collision attack, which is an attack on a cryptographic hash that tries to find two inputs producing the same hash value [17](https://en.wikipedia.org/wiki/Collision_attack), exists that can find collisions within seconds on a computer with a 2.6 GHz Pentium 4 processor (complexity of 224.1). Further, there is also a chosen-prefix collision attack that can produce a collision for two inputs with specified prefixes within seconds, using off-the-shelf computing hardware (complexity 239) [18](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack). These hash and collision attacks have been demonstrated in the public in various situations, including colliding document files and digital certificates. [1](https://en.wikipedia.org/wiki/MD5#Security)
+
+In 1996, a flaw was found in the design of MD5 and was not deemed a major weakness at the time. In 2004, it was shown that MD5 is not collision-resistant which doesn't make it suitable for applications like SSL certificates or digital signatures, which rely collision-resitant algorithms for security.
+
+#### MD5 for passwords
+Using salted MD5 for passwords is not recommended. Not because of MD5's cryptographic weaknesses, but because it is fast. This means that an attacker can try billions of passwords per second on a single GPU. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+
+#### MD5 for file integrity
+Using MD5 for file integrity may or may not be a practical problem, depending on the exact usage scenario.
+
+As discussed, the attacks against MD5 are collision attacks, not pre-image attacks. This means an attacker can produce two files with the same hash, if they have control over both of them but they can't match the hash of an existing file they didn't influence. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
+
+The main take from analysing the security of the MD5 algorithm is that is shouldn't be used. You should not use elementary cryptographic algorithms, but ___protocols___ which assemble several algorithms so that they collectively provide some security features (e.g. transfer of data with confidentiality and integrity). For storing passwords (more accurately, password verification tokens), don't make a custom mix of a hash function and salts; use a construction which has been studied specifically for such a use. If a hash function is desired, SHA-256 is much more preferable. [16](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure)
 
 ### Time Complexity
 MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes).
@@ -244,20 +266,22 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * **Week 9 - 11:** Week 9 - 11 was mainly comprised of finsihing off the project and writing up documentation.
 
 ## References
-* [1] [MD5](https://en.wikipedia.org/wiki/MD5)
+* [1] [MD5](https://en.wikipedia.org/wiki/MD5) - Used to discuss various aspects of the MD5 algorithm, such as an overview of it and it's security.
 * [2] [Request For Comments 1321 document](https://tools.ietf.org/html/rfc1321) - Used to help implement this version of the MD5 algorithm.
-* [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c).
-* [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14).
-* [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0).
-* [6] [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/).
-* [7] [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C).
-* [8] [Secure Hash Standard PDF](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
-* [9] [Algorithm Complexity & Security: MD5 or SHA1](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1)
-* [10] [Difference between MD5 and SHA1](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/)
-* [11] [Is SHA1 better than MD5 only because it generates a hash of 160 bits?](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits)
-* [12] [Bitwise Operators in C](https://www.tutorialspoint.com/cprogramming/c_bitwise_operators.htm)
-* [13] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
-* [14] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256)
-* [15] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5)
-* [16] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes)
-* Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256).
+* [3] [Sourav Punoriyar's MD5 implementation in C](https://github.com/Souravpunoriyar/md5-in-c) - Used as a reference to help implement certain aspects of this implementation, such as padding and printing the hash value.
+* [4] [Network Security - MD5 Algorithm (Sundeep Saradhi Kanthety)](https://www.youtube.com/watch?v=53O9J2J5i14) - Video watched during research portion to help gain a better understanding of the MD5 hash algorihtm. 
+* [5] [Message Digest Algorithm: MD5 (DrVikasThada)](https://www.youtube.com/watch?v=-uRpRMpvdm0) - Video also watched during research portion to help gain a better understanding of the MD5 hash algorihtm. This video contains diagrams to help visualize the operation of the algorithm. 
+* [6] [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp/) - Used during research portion to help gain a better understanding of the bitwise operators in C, which were used heavily in the implemenation of the algorithm.
+* [7] [Bitwise operations in C](https://en.wikipedia.org/wiki/Bitwise_operations_in_C) - Wikipedia page on the bitwise operations in C, which was also helpful in understanding the operators further.
+* [8] [Secure Hash Standard PDF](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf) - Document used during video lectures in the implemenation of SHA-256.
+* [9] [Algorithm Complexity & Security: MD5 or SHA1](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1) - Used as a reference on the differences between MD5 and SHA1. Helpful in seeing the exact properties of MD5.
+* [10] [Difference between MD5 and SHA1](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/) - Also used to determine the differences between MD5 and SHA.
+* [11] [Is SHA1 better than MD5 only because it generates a hash of 160 bits?](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits) - Used as a reference on the issue of collision with MD5.
+* [12] [What is the purpose of padding an md5 message if it is already the right length?](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length)
+* [13] [Is md5's padding the same that sh256?](https://stackoverflow.com/questions/54606597/is-md5s-padding-the-same-that-sh256) - A discussion on the padding in MD5 and SHA-256.
+* [14] [Time Complexity of MD5](https://stackoverflow.com/questions/43625569/time-complexity-of-md5) - A discussion on the time complexity of MD5.
+* [15] [Is it possible to decrypt MD5 hashes?](https://stackoverflow.com/questions/1240852/is-it-possible-to-decrypt-md5-hashes) - Used as a reference on whether it's possible to decrypt MD5 hashes.
+* [16] [Is MD5 considered insecure?](https://security.stackexchange.com/questions/19906/is-md5-considered-insecure) - Used as a reference on a discussion on the insecurity of MD5.
+* [17] [Collision Attack](https://en.wikipedia.org/wiki/Collision_attack) - Used to briefly discuss a collision attack.
+* [18] [Chosen-prefix Collision Attack](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack) - Used to briefly discuss a chosen-prefix collision attack.
+* Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256)
