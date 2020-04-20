@@ -7,6 +7,8 @@
  ### Developer
 * Kevin Niland
 
+---
+
  ## Introduction
  This section provides an introduction to the repository and code.
  
@@ -224,6 +226,8 @@ The manual padding operations performed are done as follows:
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
 
+---
+
 ## Complexity
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
 
@@ -252,6 +256,8 @@ The main take from analysing the security of the MD5 algorithm is that is should
 ### Time Complexity
 MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes) [14](https://stackoverflow.com/questions/43625569/time-complexity-of-md5).
 
+---
+
 ## Research, Project Overview, and Developer Diary
 * **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
 * **Week 2:** In this week a video on the SHA Standard was made available to us, which gave us an overview of the SHA specification. In this video, our lecturer went through the Secure Hash Standard document [8] published by the National Institute of Standards and Technology. Further reading included researching and discerning the differences between the SHA and MD5 hash algorithms, from various resources [9], [10], [11]. Some differences include MD5 is faster than SHA, SHA is more secure than MD5, MD5 can have a bit length of 128 while SHA can have a bit length of 160. They also disccused how MD5 is considered broken in the sense that you can generate a collision and thus should not be used for any security applications. SHA is not known to be broken and is believed to be secure. I also researched how each generated a hash of a message.
@@ -265,6 +271,8 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * **Week 7:** In this week videos on the hash function and finalising the padding with hashing was made available to us and I coded up the files from these.
 * **Week 8:** In this week a video on testing and refactoring the entire code done so far was made available to us. From viewing this, it was evident that coding up the SHA specification in this way was beneficial to us as it allowed us to get a firm grasp on each part before moving onto the next part.
 * **Week 9 - 11:** Week 9 - 11 was mainly comprised of finsihing off the project and writing up documentation.
+
+---
 
 ## References
 * [1] [MD5](https://en.wikipedia.org/wiki/MD5) - Used to discuss various aspects of the MD5 algorithm, such as an overview of it and it's security.
