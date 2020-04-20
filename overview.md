@@ -51,14 +51,14 @@ You should now be able to compile C programs using GCC. If you have any issues, 
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
 * Navigate to the project directory and set your working directory to the `md5` directory: `../Calculation-of-the-MD5-hash-digest-of-an-input/md5 $`.
 * A compiled version of the program is already provided. If you want to compile the program yourself, use the command `gcc -o md5 .\md5.c`.
-* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program:
-   * `.\md5 --help` - This will display information on how to run the program, and display all command line arguments the user can specify. 
-   * `.\md5 --test` - This will allow you to test the hash of a file to see if it's correct.
-   * `.\md5 --test-suites` - This will display all messages and their accompanying hash value to the screen.
-   * `.\md5 --version` - This will display the current version of program.
-   * `.\md5 --file` - This will allow you to hash a file from the command line.
-   * `.\md5 --string` - This will allow you to hash a string from the command line.
-   * `.\md5 --print-file` - This will display the contents of file.
+* Once compiled, simply enter the name of the compiled program on the command line to run it: `.\md5`. You can also gain extra information on the program by including the following command line arguments when running the compiled program. Each command can be ran by entering in the shorthand of the command, shown below:
+   * `.\md5 --help \ --h` - This will display information on how to run the program, and display all command line arguments the user can specify. 
+   * `.\md5 --test \ --t` - This will allow you to test the hash of a file to see if it's correct.
+   * `.\md5 --test-suites \ --t-s` - This will display all messages and their accompanying hash value to the screen.
+   * `.\md5 --version \ --v` - This will display the current version of program.
+   * `.\md5 --file \ --f` - This will allow you to hash a file from the command line.
+   * `.\md5 --string --s` - This will allow you to hash a string from the command line.
+   * `.\md5 --print-file \ --p-f` - This will display the contents of file.
 * Once ran, the user will be presented with a menu. They have the option of specifying a file to hash (starter files are located in the `files` directory), specifying a string to hash, or to exit the program.
    1. To hash a file, choose option 1 and then enter the path to the file (to use one of the files provided, enter `files/name-of-file.txt` when prompted (for example, to hash the file containing the letters of the alphabet, enter `files/alphabet.txt` when prompted).
    2. To hash a string, choose option 2 and enter a string (currently only supports entering one word, not a sentence). This string will 
@@ -105,6 +105,37 @@ Now you're all set up to use either GCC or `make` to compile and run the program
    then be written to file, at which point it will be automatically hashed and the result will be printed out.
    3. To exit the program, choose option 3.
 * Once a file or string is chosen to hash, the output of the hash will be printed to screen. As the starter files contain test suites defined on page 21 of the [MD5 Message-Digest Algorithm memo](https://tools.ietf.org/html/rfc1321), the output can be quickly verified. Alternatively, if the user wishes to specify their own string/message, the output can be verified using the [Online MD5 Hash Generator & SHA1 Hash Generator](http://onlinemd5.com/).
+
+---
+
+## Testing
+This implementation of the MD5 algorithm supports the ability to test the hash of a file or a string. The hash is checked against an array that contains hashes for several different messages. Testing is performed by using the command `--test`. The user can then choose to check the hash of a file or a string by following the test command with either `--file` or `--string`.
+
+### Testing a file or a string
+The easiest way I found to test the hash of a file or a string was to first read in the file or string and perform the MD5 algorithm on it. The value of this hash would then be written to file. The contents of the file would then be checked to see if it is contained in the array of hashes shown below. As can be seen, this array is quite limited at the moment and mainly contains the hash values of the messages found in the RFC 1321 document. This array will be expanded on in the future but feel free to add the relevant hash value for any message you see fit.
+
+### Checking the hash of a file or a string
+* [checkhash](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/images/checkhash.png)
+
+### Array of hashes
+Below are the hashes for all messages currently supported:
+
+- MD5 ("") = d41d8cd98f00b204e9800998ecf8427e - FAILS (Incorrect hash returned)
+- MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661 - PASSES (Correct hash returned)
+- MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72 - PASSES (Correct hash returned)
+- MD5 ("md5") = 1bc29b36f623ba82aaf6724fd3b16718 - PASSES (Correct hash returned)
+- MD5 ("hash") = 0800fc577294c34e0b28ad2839435945 - PASSES (Correct hash returned)
+- MD5 ("hello") = 5d41402abc4b2a76b9719d911017c592 - PASSES (Correct hash returned)
+- MD5 ("message") = 78e731027d8fd50ed642340b7c9a63b3 - PASSES (Correct hash returned)
+- MD5 ("digest") = c10f77963a2b21079156a0e5c5a4bb3c - PASSES (Correct hash returned)
+- MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0 - PASSES (Correct hash returned)
+- MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b - PASSES (Correct hash returned)
+- MD5 ("123") = 202cb962ac59075b964b07152d234b70 - PASSES (Correct hash returned)
+- MD5 ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") = d174ab98d277d9f5a5611c2c9f419d9f - FAILS (Incorrect hash returned)
+- MD5 ("12345678901234567890123456789012345678901234567890123456789012345678901234567890") = 57edf4a22be3c955ac49da2e2107b67a - FAILS (Incorrect hash returned)
+
+_From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
+
 
 ---
 
@@ -186,25 +217,6 @@ CHANGE
 ![states_update](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/states_update.PNG)
 <br/>
 After the four transform rounds, we update the states after and then perform a final update on the value.
-
-#### Array of hashes (for testing)
-An array containing the hash values for various messages is used to check whether or not the hash of a file is correct. Below are the hashes for all messages currently supported:
-
-- MD5 ("") = d41d8cd98f00b204e9800998ecf8427e - FAILS (Incorrect hash returned)
-- MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661 - PASSES (Correct hash returned)
-- MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72 - PASSES (Correct hash returned)
-- MD5 ("md5") = 1bc29b36f623ba82aaf6724fd3b16718 - PASSES (Correct hash returned)
-- MD5 ("hash") = 0800fc577294c34e0b28ad2839435945 - PASSES (Correct hash returned)
-- MD5 ("hello") = 5d41402abc4b2a76b9719d911017c592 - PASSES (Correct hash returned)
-- MD5 ("message") = 78e731027d8fd50ed642340b7c9a63b3 - PASSES (Correct hash returned)
-- MD5 ("digest") = c10f77963a2b21079156a0e5c5a4bb3c - PASSES (Correct hash returned)
-- MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0 - PASSES (Correct hash returned)
-- MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b - PASSES (Correct hash returned)
-- MD5 ("123") = 202cb962ac59075b964b07152d234b70 - PASSES (Correct hash returned)
-- MD5 ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") = d174ab98d277d9f5a5611c2c9f419d9f - FAILS (Incorrect hash returned)
-- MD5 ("12345678901234567890123456789012345678901234567890123456789012345678901234567890") = 57edf4a22be3c955ac49da2e2107b67a - FAILS (Incorrect hash returned)
-
-_From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
 
 ## Complexity
 This section will give an analysis of the MD5 algorithm, including the complexity of the algorithms that attempt to reverse it (algorithms that attempt to find an input for which the MD5 algorithm produces a given output).
