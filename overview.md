@@ -40,14 +40,14 @@ This section provides a quick overview of setting up a compiler for C programs o
    
    `C:\path\to\folder-with-installer>setup-x86_64.exe -q -P wget -P gcc-g++ -P make -P diffutils -P libmpfr-devel -P libgmp-devel -P libmpc-devel`
    
-A window will pop up and download all the required packages along with their dependencies.
+   A window will pop up and download all the required packages along with their dependencies.
    
 * **Download, Build and Install the Latest GCC** Open a Cygwin terminal, either from the Start menu or by running Cygwin.bat from the Cygwin installation folder. To download and extract the latest GCC source code, enter the following commands in the Cygwin terminal:
 
    `wget http://ftpmirror.gnu.org/gcc/gcc-4.9.2/gcc-4.9.2.tar.gz`
    `tar xf gcc-4.9.2.tar.gz`
 
-You should now be able to compile C programs using GCC. If you have any issues, please refer to the above guide for installing GCC on Windows.
+   You should now be able to compile C programs using GCC. If you have any issues, please refer to the above guide for installing GCC on Windows.
 
 ##### How to run
 * Download the project or clone the repository using `git clone https://github.com/kevinniland97/Calculation-of-the-MD5-hash-digest-of-an-input`.
