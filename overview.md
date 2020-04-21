@@ -13,13 +13,15 @@
  This section provides an introduction to the repository and code.
  
  ### Repository
- This repository contains the following directories:
+ This repository contains the following directories and files:
  * [images](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/images) - Contains images used to help aid in the explanation of certain parts of the MD5 algorithm and the accompanying code.
  * [md5](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5) - The main directory of the repository. Contains: 
    * [files](https://github.com/kevinniland97/MD5-message-digest-algorithm/tree/master/md5/files) directory, which contains files with varying different letters and strings (most taken from the RFC 1321 document's test suites)
    * [md5.c](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/md5.c), the C file containing all the code used to implement the MD5 message digest algorithm
    * [md5.exe](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/md5.exe), a pre-compiled version of md5.c (can only be run on a Windows system - the md5.c file must be compiled using '[make](https://www.tutorialspoint.com/unix_commands/make.htm)', which is typically used to build executable programs and libraries from source code (mainly on Unix systems)
    * [user_input.txt](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/user_input.txt), which is used to store a user's input.
+   
+A short screencast of the application being demo is available [here](https://www.youtube.com/watch?v=ghIuf0bnVhw&t=124s).
 
 ---
 
@@ -141,7 +143,7 @@ Below are the hashes for all messages currently supported:
 | ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 |  8D93AD635E2C8C822D796BD8726EEF6B | NO (Incorreect hash returned) |
 | 12345678901234567890123456789 |  04CC4AB7C18F13B2FD594B52DFDEDFFF |NO (Incorreect hash returned) |
 
-_From this, it can be seen that messages containing numbers won't always be hashed correctly all the time_
+_From this, it can be seen that messages containing numbers won't always be hashed correctly all the time with this implementation_
 
 ---
 
