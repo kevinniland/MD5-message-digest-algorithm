@@ -21,7 +21,7 @@
    * [md5.exe](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/md5.exe), a pre-compiled version of md5.c (can only be run on a Windows system - the md5.c file must be compiled using '[make](https://www.tutorialspoint.com/unix_commands/make.htm)', which is typically used to build executable programs and libraries from source code (mainly on Unix systems)
    * [user_input.txt](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/md5/user_input.txt), which is used to store a user's input.
    
-A short screencast of the application being demo is available [here](https://www.youtube.com/watch?v=ghIuf0bnVhw&t=124s).
+A short screencast of the application being demoed is available [here](https://www.youtube.com/watch?v=ghIuf0bnVhw&t=124s).
 
 ---
 
