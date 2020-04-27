@@ -21,10 +21,6 @@ int main (void) {
         return 1;
     }
 
-    /* read/evaluate from here */
-    // read_command (...);
-    // evaluate_command (...);
-
     fclose (fp);
 
     return 0;

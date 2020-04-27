@@ -3,6 +3,7 @@
  * 
  * MD5 message digest algorithm implementation
  */ 
+#include <dirent.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -317,7 +318,10 @@ int main(int argc, char **argv) {
                         "f96b697d7cb7938d525a2f31aaf161d0", "c3fcd3d76192e4007dfb496cca67e13b", "d174ab98d277d9f5a5611c2c9f419d9f",
                         "57edf4a22be3c955ac49da2e2107b67a", "5d41402abc4b2a76b9719d911017c592", "78e731027d8fd50ed642340b7c9a63b3",
                         "c10f77963a2b21079156a0e5c5a4bb3c", "1bc29b36f623ba82aaf6724fd3b16718", "0800fc577294c34e0b28ad2839435945",
-                        "202cb962ac59075b964b07152d234b70" };
+                        "202cb962ac59075b964b07152d234b70", "25f9e794323b453885f5181f1b624d0b", "01365b2bab5c481ab2880c798c1110d8",
+                        "c3d3c17b4ca7f791f85e1cc72f274af4", "e99a18c428cb38d5f260853678922e03", "3be9b75f49652e218d7de816e4870dad",
+                        "a906449d5769fa7361d7ecc6aa3f6d28", "1f35170c035622651cdfda894f45e98e", "4b8f302342446e0958869216da1cf2ba",
+                        "6125f3f0367e2f34fc2656b572605d7d", "87b7cb79481f317bde90c116cf36084b", "408c06609ccabfc09e76f1807156d01c" };
   FILE *file = NULL; // File pointer for files in the 'files' directory
   FILE *userPtr; // File pointer for file created from user input
   MD5_CTX md5_ctx_val; // Context
@@ -326,7 +330,7 @@ int main(int argc, char **argv) {
   int menuOption, i, hashFound = false;
   char file_name[FNSZ] = {0};
   char user_file[50] = "user_input.txt"; // File that stores user input
-  char string[100], line[100]; // User input
+  char string[100], line[100], cwd[100]; // User input
   char fileLine, hashVal;
     
   // Command line arguments
@@ -423,6 +427,18 @@ int main(int argc, char **argv) {
       if ((strcmp(argv[2], "--string") == 0) || (strcmp(argv[2], "--s") == 0)) {
 
       }
+    // } else if ((strcmp(argv[1], "--all") == 0) || (strcmp(argv[1], "--a") == 0)) {
+    //     const char *testmessages[] = { "hello", "message digest", "123", "md5", "hash", "123456789", "my name is", "logic", "a", "abc", "abc123", 
+    //                             "md5 hash", "123abc", "abcABC123456", "black keys", "avenged sevenfold", "robot", "abc_123" };
+    //     const char *text = "Write this to the file";
+
+    //     for (i = 0; i < sizeof(testmessages); i++) {
+    //       printf("%s\n", testmessages[i]);
+    //     }
+
+    //     // md5_init(&md5_ctx_val);
+    //     // file = md5_hash(&md5_ctx_val, &B, argv[3]);
+    //   exit(1);
     } else if ((strcmp(argv[1], "--test-suites") == 0) || (strcmp(argv[1], "--t-s") == 0)) {
       printf("\nMD5 Message Digest Algorithm - MD5 Test Suite");
       printf("\n=============================================\n");

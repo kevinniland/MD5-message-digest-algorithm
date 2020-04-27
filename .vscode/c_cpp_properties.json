@@ -4,6 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "C:/OpenSSL-Win64/include/",
+                "C:/Program Files (x86)/cmocka/bin",
+                "C:/Program Files (x86)/cmocka/include",
+                "C:/dirent/include",
                 "${workspaceFolder}/**"
             ],
             "browse": {
@@ -11,6 +14,9 @@
                 "path": [
                     "C:/mingw-w64/mingw64/bin",
                     "C:/OpenSSL-Win64/include/",
+                    "C:/dirent/include",
+                    "C:/Program Files (x86)/cmocka/bin",
+                    "C:/Program Files (x86)/cmocka/include",
                     "${workspaceRoot}"
                 ]
             },

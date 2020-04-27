@@ -5,6 +5,7 @@
         "stdio.h": "c",
         "inttypes.h": "c",
         "md5.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "setjmp.h": "c"
     }
 }
