@@ -130,18 +130,18 @@ Below are the hashes for all messages currently supported:
 
 |   Message   |  Hash Value  |    Passes?     |
 |:-----------:|:------------:|:------------:|
-| a     |  d41d8cd98f00b204e9800998ecf8427e |      NO (Incorreect hash returned)        |
-| abc |  0cc175b9c0f1b6a831c399e269772661 |    YES (Correect hash returned)          |
-| md5 |  900150983cd24fb0d6963f7d28e17f72 |    YES (Correect hash returned)          |
-| hash |  0800fc577294c34e0b28ad2839435945 |     YES (Correect hash returned)         |
-| hello |  5d41402abc4b2a76b9719d911017c592 |     YES (Correect hash returned)         |
-| message |  78e731027d8fd50ed642340b7c9a63b3 |    YES (Correect hash returned)          |
-| digest |  c10f77963a2b21079156a0e5c5a4bb3c |     YES (Correect hash returned)         |
-| message digest |  f96b697d7cb7938d525a2f31aaf161d0 |    YES (Correect hash returned)          |
-| abcdefghijklmnopqrstuvwxyz |  c3fcd3d76192e4007dfb496cca67e13b |     YES (Correect hash returned)         |
-| 123 |  202cb962ac59075b964b07152d234b70 |     YES (Correect hash returned)         |
-| ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 |  8D93AD635E2C8C822D796BD8726EEF6B | NO (Incorreect hash returned) |
-| 12345678901234567890123456789 |  04CC4AB7C18F13B2FD594B52DFDEDFFF |NO (Incorreect hash returned) |
+| a     |  d41d8cd98f00b204e9800998ecf8427e |      NO (Incorrect hash returned)        |
+| abc |  0cc175b9c0f1b6a831c399e269772661 |    YES (Correct hash returned)          |
+| md5 |  900150983cd24fb0d6963f7d28e17f72 |    YES (Correct hash returned)          |
+| hash |  0800fc577294c34e0b28ad2839435945 |     YES (Correct hash returned)         |
+| hello |  5d41402abc4b2a76b9719d911017c592 |     YES (Correct hash returned)         |
+| message |  78e731027d8fd50ed642340b7c9a63b3 |    YES (Correct hash returned)          |
+| digest |  c10f77963a2b21079156a0e5c5a4bb3c |     YES (Correct hash returned)         |
+| message digest |  f96b697d7cb7938d525a2f31aaf161d0 |    YES (Correct hash returned)          |
+| abcdefghijklmnopqrstuvwxyz |  c3fcd3d76192e4007dfb496cca67e13b |     YES (Correct hash returned)         |
+| 123 |  202cb962ac59075b964b07152d234b70 |     YES (Correct hash returned)         |
+| ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 |  8D93AD635E2C8C822D796BD8726EEF6B | NO (Incorrect hash returned) |
+| 12345678901234567890123456789 |  04CC4AB7C18F13B2FD594B52DFDEDFFF |NO (Incorrect hash returned) |
 
 _From this, it can be seen that messages containing numbers won't always be hashed correctly all the time with this implementation_
 
