@@ -156,16 +156,16 @@ From the MD5 wikipedia [[1]](https://en.wikipedia.org/wiki/MD5), _"MD5 processes
 ### MD5 Steps
 There are five steps involved in computing the message digest of the message, which this section will discuss.
 
-#### Step 1 - Append Padding Bits (Section 3.1 of RFC 1321 document) [2]
+#### Step 1 - Append Padding Bits (Section 3.1 of RFC 1321 document) [[2]](https://tools.ietf.org/html/rfc1321)
 The message is "padded" (extended) so that its length (in bits) is congruent to 448, modulo 512. Padding is always performed, even if the length of the message is already congruent to 448, modulo 512. Padding is performed as follows: a single "1" bit is appended to the message, and then "0" bits are appended so that the length in bits of the padded message becomes congruent to 448, modulo 512. In all, at least one bit and at most 512 bits are appended.
 
-#### Step 2 - Append Length (Section 3.2 of RFC 1321 document) [2]
+#### Step 2 - Append Length (Section 3.2 of RFC 1321 document) [[2]](https://tools.ietf.org/html/rfc1321)
 A 64-bit representation of b (the length of the message before the padding bits were added) is appended to the result of the previous 
 step. In the unlikely event that b is greater than 2^64, then only the low-order 64 bits of b are used. At this point the resulting 
 message (after padding with bits and with b) has a length that is an exact multiple of 512 bits. Equivalently, this message has a length 
 that is an exact multiple of 16 (32-bit) words. Let M[0 ... N-1] denote the words of the resulting message, where N is a multiple of 16.
 
-#### Step 3 - Initialize MD Buffer (Section 3.3 of RFC 1321 document) [2]
+#### Step 3 - Initialize MD Buffer (Section 3.3 of RFC 1321 document) [[2]](https://tools.ietf.org/html/rfc1321)
 A four-word buffer (A, B, C, D) is used to compute the message digest. Here each of A, B, C, D is a 32-bit register. These registers are
 initialized to the following values in hexadecimal, low-order bytes first):
 
@@ -176,12 +176,12 @@ initialized to the following values in hexadecimal, low-order bytes first):
 | word C: |  fe dc ba 98 | 
 | word D: |  76 54 32 10 |
 
-#### Step 4 - Process Message in 16-Word Blocks (Section 3.4 of RFC 1321 document) [2]
+#### Step 4 - Process Message in 16-Word Blocks (Section 3.4 of RFC 1321 document) [[2]](https://tools.ietf.org/html/rfc1321)
 Define four auxiliary functions that each take as input three 32-bit words and produce as output one 32-bit word:
 
 ![functions](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/functions_wiki.PNG)
 
-#### Step 5 - Output (Section 3.5 of RFC 1321 document) [2]
+#### Step 5 - Output (Section 3.5 of RFC 1321 document) [[2]](https://tools.ietf.org/html/rfc1321)
 The message digest produced as output is A, B, C, D. That is, we begin with the low-order byte of A, and end with the high-order byte of
 D.
 
@@ -261,8 +261,8 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 ---
 
 ## Research, Project Overview, and Developer Diary
-* **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [2] and from watching videos based on it [4], [5]. My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
-* **Week 2:** In this week a video on the SHA Standard was made available to us, which gave us an overview of the SHA specification. In this video, our lecturer went through the Secure Hash Standard document [8] published by the National Institute of Standards and Technology. Further reading included researching and discerning the differences between the SHA and MD5 hash algorithms, from various resources [[9]](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1), [[10]](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/), [[11]](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits). Some differences include MD5 is faster than SHA, SHA is more secure than MD5, MD5 can have a bit length of 128 while SHA can have a bit length of 160. They also disccused how MD5 is considered broken in the sense that you can generate a collision and thus should not be used for any security applications. SHA is not known to be broken and is believed to be secure. I also researched how each generated a hash of a message.
+* **Week 1:** When we first received the project spec, I proceeded to research the MD5 message-digest algorithm through various different sources, such as the Request For Comments 1321 document [[2]](https://tools.ietf.org/html/rfc1321) and from watching videos based on it [[4]](https://www.youtube.com/watch?v=53O9J2J5i14), [[5]](https://www.youtube.com/watch?v=-uRpRMpvdm0). My initial commits to this repository comprised of code taken from the intital videos put up by our lecturer, Ian McLoughlin, and some simple functionality written in C that would be implemented at a later date, such as reading from a file and taking in a user's input. I also started to set up my own Virtual Machine instance on Google Cloud and refamiliarized myself with VI through it.
+* **Week 2:** In this week a video on the SHA Standard was made available to us, which gave us an overview of the SHA specification. In this video, our lecturer went through the Secure Hash Standard document [[8]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf) published by the National Institute of Standards and Technology. Further reading included researching and discerning the differences between the SHA and MD5 hash algorithms, from various resources [[9]](https://stackoverflow.com/questions/2948156/algorithm-complexity-security-md5-or-sha1), [[10]](https://www.geeksforgeeks.org/difference-between-md5-and-sha1/), [[11]](https://security.stackexchange.com/questions/19705/is-sha1-better-than-md5-only-because-it-generates-a-hash-of-160-bits). Some differences include MD5 is faster than SHA, SHA is more secure than MD5, MD5 can have a bit length of 128 while SHA can have a bit length of 160. They also disccused how MD5 is considered broken in the sense that you can generate a collision and thus should not be used for any security applications. SHA is not known to be broken and is believed to be secure. I also researched how each generated a hash of a message.
 * **Week 3:** In this week a video on C bit operations was made available to us and I coded up the file from this. I proceeded to research bitwise operators in C to get a better understanding of how each worked [[12]](https://stackoverflow.com/questions/3701550/what-is-the-purpose-of-padding-an-md5-message-if-it-is-already-the-right-length). I then re-read the suggested documents on MD5 and SHA [[2]](https://tools.ietf.org/html/rfc1321), [[8]](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf) due to the fact that my understanding of each would be improved.
 
 ![bitwise](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/bitwise.PNG)<br/>
