@@ -190,7 +190,9 @@ D.
 #### Diagram of MD5 Operation
 <img src="https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/security-md5_hashing.jpg" width="40%">   <img src="https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_op.png" width="40%">
 
-The above diagrams showcase 
+The above diagrams showcase what happens to an input when run against the MD5 message-digest algorithm. Even though the above messages are quite similar, even a slight difference can drastically change the hash value.
+
+The diagram on the right shows how the auxiliary function F is applied to the four buffers (A, B, C and D), using message word Mi and constant Ki. The item "<<<s" denotes a binary left shift by s bits.
 
 ### Implementation
 This section will give a quick explanation of the most significant and important parts of the program:
@@ -263,6 +265,12 @@ The main take from analysing the security of the MD5 algorithm is that is should
 ### Time Complexity
 MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operation (sometimes it may add one more block to the data - "the message is padded so that its length is divisible by 512"). So, if n is bytes, it does roundup(8*n/512) operations which is O(n) in Uniform Cost model (real memory hierarchy has nonuniform access cost for different layers/sizes) [[14]](https://stackoverflow.com/questions/43625569/time-complexity-of-md5).
 
+### Applications of MD5 
+MD5 digests have been widely used in the software world to provide some assurance that a transferred file has arrived intact. For example, file servers often provide a pre-computed MD5 (known as md5sum) checksum for the files, so that a user can compare the checksum of the downloaded file to it. As discussed, it is easy to generate MD5 collisons so it's possible create a second file with the same checksum as the first, meaning this technique cannot protect against some forms of malicious tampering. 
+
+### Can the MD5 hash be reversed?
+In general, hash functions are not reversible [[20]](https://www.johndcook.com/blog/2019/01/24/reversing-an-md5-hash/). MD5 is a 128-bit hash, and so it maps any string, no matter how long, into 128 bits. Given some context, however, it may be possible to reverse a hash. For example, if the context is a short, weak password, it is possible to determine the what text was hashed. If you hash the message "password", the hash of this will be 5f4dcc3b5aa765d61d8327deb882cf99. A web search for this will return approximately 21,000 results. One of the first results will return the original message, "password". While this is not a "true" reversal of the algorithm, this shows how cryptographically insecure the MD5 message-digest algorithm is and why it is not used as much anymore.
+
 ---
 
 ## Research, Project Overview, and Developer Diary
@@ -302,4 +310,5 @@ MD5 processes data in blocks of 512 bits, doing 4 rounds of some internal operat
 * [17] [Collision Attack](https://en.wikipedia.org/wiki/Collision_attack) - Used to briefly discuss a collision attack.
 * [18] [Chosen-prefix Collision Attack](https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack) - Used to briefly discuss a chosen-prefix collision attack.
 * [19] [Padding](https://en.wikipedia.org/wiki/Padding_(cryptography))
+* [20] [Reversing an MD5 Hash](https://www.johndcook.com/blog/2019/01/24/reversing-an-md5-hash/)
 * Several videos done by [Ian McLoughlin](https://github.com/ianmcloughlin). [Repository for videos](https://github.com/ianmcloughlin/sha256)
