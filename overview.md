@@ -187,6 +187,11 @@ D.
 
 ![output](https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/output.PNG)
 
+#### Diagram of MD5 Operation
+<img src="https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/security-md5_hashing.jpg" width="40%">   <img src="https://github.com/kevinniland97/MD5-message-digest-algorithm/blob/master/images/md5_op.png" width="40%">
+
+The above diagrams showcase 
+
 ### Implementation
 This section will give a quick explanation of the most significant and important parts of the program:
 <br/>
